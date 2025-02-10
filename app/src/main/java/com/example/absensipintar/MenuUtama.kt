@@ -1,14 +1,9 @@
 package com.example.absensipintar
 
-import android.content.Intent
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.example.absensipintar.databinding.ActivityLoginBinding
 import com.example.absensipintar.databinding.ActivityMenuUtamaBinding
 
 class MenuUtama : AppCompatActivity() {
@@ -20,6 +15,13 @@ class MenuUtama : AppCompatActivity() {
         val viewPager2 = b.viewpager
         val adapter = MenuPagerAdapter(this)
         viewPager2.adapter = adapter
+
+
+
+
+
+
+
 
 
         b.home.setOnClickListener { viewPager2.currentItem = 0 }

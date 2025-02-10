@@ -40,7 +40,7 @@ android {
 }
 
 dependencies {
-
+    implementation ("androidx.biometric:biometric:1.2.0-alpha05")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

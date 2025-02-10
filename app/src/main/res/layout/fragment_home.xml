@@ -114,11 +114,25 @@
                         android:layout_height="match_parent">
 
                         <ImageView
+                            android:id="@+id/absenMasuk"
                             android:layout_centerHorizontal="true"
                             android:layout_marginTop="5dp"
                             android:layout_width="90dp"
                             android:src="@drawable/fingerprintt"
                             android:layout_height="68dp"/>
+
+                        <TextView
+                            android:id="@+id/textAbsen"
+                            android:visibility="gone"
+                            android:layout_marginHorizontal="10dp"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="20dp"
+                            android:layout_width="wrap_content"
+                            android:text="10 : 12 : 20"
+                            android:textColor="@color/birutua"
+                            android:fontFamily="@font/popinssemibold"
+                            android:textSize="27dp"
+                            android:layout_height="34dp"/>
 
 
                         <LinearLayout
@@ -166,8 +180,15 @@
                         android:orientation="vertical"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
-
+                        <ImageView
+                            android:id="@+id/absenKeluar"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="5dp"
+                            android:layout_width="90dp"
+                            android:src="@drawable/fingerprintt"
+                            android:layout_height="68dp"/>
                         <TextView
+                            android:id="@+id/absenKeluartext"
                             android:layout_marginHorizontal="10dp"
                             android:layout_centerHorizontal="true"
                             android:layout_marginTop="20dp"
@@ -222,9 +243,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <ImageView
+                android:id="@+id/imgputar"
                 android:layout_width="160dp"
                 android:src="@drawable/waiting"
-                android:layout_height="170dp"/>
+                android:layout_height="160dp"/>
 
 
             <TextView
