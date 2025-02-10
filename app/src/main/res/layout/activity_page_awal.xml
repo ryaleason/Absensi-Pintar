@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:background="@drawable/bgwelcome"
+    android:fitsSystemWindows="true"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".PageAwal">
+
+    <!--    <LinearLayout-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_alignBottom="@+id/linearLayout"-->
+    <!--        android:layout_marginHorizontal="25dp"-->
+    <!--        android:layout_marginTop="10dp"-->
+    <!--        android:layout_marginBottom="128dp"-->
+    <!--        android:gravity="end">-->
+
+
+    <!--        <ImageView-->
+    <!--            android:layout_width="45dp"-->
+    <!--            android:layout_height="45dp"-->
+    <!--            android:src="@drawable/logosmall" />-->
+    <!--    </LinearLayout>-->
+
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/line1"
+        android:layout_marginBottom="50dp"
+        android:layout_marginHorizontal="25dp"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:layout_width="312dp"
+            android:layout_height="50dp"
+            android:fontFamily="@font/popinssemibold"
+            android:text="Selamat"
+            android:textColor="@color/birutua"
+            android:textSize="40dp" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:fontFamily="@font/popinssemibold"
+            android:text="Datang"
+            android:textColor="@color/birutua"
+            android:textSize="40dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:id="@+id/line1"
+        android:layout_centerInParent="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="290dp"
+                android:src="@drawable/cewek"
+                android:layout_height="220dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_below="@+id/line1"
+            android:layout_marginHorizontal="25dp"
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_marginTop="15dp"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:textSize="25dp"
+                android:textColor="@color/birutua"
+                android:layout_width="wrap_content"
+                android:fontFamily="@font/popinssemibold"
+                android:text="Absensi Pintar"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:textSize="12dp"
+                android:textAlignment="center"
+                android:textColor="#525252"
+                android:layout_width="wrap_content"
+                android:fontFamily="@font/popinregular"
+                android:text="Kemudahan dalam mencatat kehadiran kini ada di genggaman kamu. Tetap disiplin, hadir tepat waktu, dan pantau absensi dengan mudah."
+                android:layout_height="wrap_content"/>
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/line1"
+        android:layout_marginHorizontal="50dp"
+        android:layout_marginTop="70dp"
+        app:cardBackgroundColor="@color/birutua"
+        app:cardCornerRadius="5dp">
+
+        <TextView
+            android:id="@+id/next"
+            android:layout_width="match_parent"
+            android:layout_height="53dp"
+            android:fontFamily="@font/popinssemibold"
+            android:gravity="center"
+            android:text="Next"
+            android:textColor="@color/white"
+            android:textSize="17dp" />
+
+
+    </androidx.cardview.widget.CardView>
+
+
+</RelativeLayout>

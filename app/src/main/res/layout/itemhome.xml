@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <androidx.cardview.widget.CardView
+        android:layout_marginTop="10dp"
+        app:cardCornerRadius="9dp"
+        android:layout_width="match_parent"
+        android:layout_marginHorizontal="20dp"
+        android:layout_height="wrap_content">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="82dp"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="80dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:layout_height="match_parent">
+            
+            <TextView
+                android:textColor="#999999"
+                android:layout_width="wrap_content"
+                android:text="Feb"
+                android:fontFamily="@font/popinssemibold"
+                android:textSize="17dp"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:textColor="#999999"
+                android:layout_width="wrap_content"
+                android:text="18"
+                android:fontFamily="@font/popinssemibold"
+                android:textSize="17dp"
+                android:layout_height="wrap_content"/>
+
+
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="1dp"
+            android:background="#999999"
+            android:layout_marginVertical="5dp"
+            android:layout_height="match_parent"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginLeft="10dp"
+            android:gravity="center_vertical"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:text="Senin"
+                android:textSize="20dp"
+                android:fontFamily="@font/popinssemibold"
+
+                android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:layout_marginTop="3dp"
+                    android:gravity="center"
+                    android:layout_marginLeft="10dp"
+                    android:layout_width="wrap_content"
+                    android:text="Tepat Waktu"
+                    android:textSize="10dp"
+                    android:fontFamily="@font/popinmedium"
+                    android:textColor="#00B40C"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:text="Waktu tiba : 15:27:39 "
+                android:textSize="13dp"
+                android:fontFamily="@font/popinssemibold"
+                android:layout_height="wrap_content"/>
+
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:gravity="end"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:background="#35B300"
+                android:layout_width="7dp"
+                android:layout_height="match_parent"/>
+
+        </LinearLayout>
+    </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+
+</LinearLayout>

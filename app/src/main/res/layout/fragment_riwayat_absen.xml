@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".RiwayatAbsenFragment">
+
+    <LinearLayout
+        android:gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:layout_marginHorizontal="25dp"
+        android:layout_marginTop="15dp"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:text="Absensi Pintar"
+            android:textColor="@color/birutua"
+            android:fontFamily="@font/popinmedium"
+            android:layout_height="17dp"/>
+
+        <ImageView
+            android:layout_marginLeft="5dp"
+            android:src="@drawable/checkmarkbgwhite"
+            android:layout_width="20dp"
+            android:layout_height="20dp"/>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_marginTop="40dp"
+        android:layout_above="@+id/center"
+        android:layout_width="match_parent"
+        android:layout_marginHorizontal="25dp"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="Riwayat Absen"
+                android:fontFamily="@font/popinssemibold"
+                android:textColor="@color/birutua"
+                android:textSize="25dp"
+                android:layout_height="30dp"/>
+
+        <LinearLayout
+            android:gravity="end"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_marginLeft="10dp"
+                android:src="@drawable/calendar"
+                android:layout_height="30dp"/>
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+</LinearLayout>

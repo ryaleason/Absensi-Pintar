@@ -1,0 +1,10 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.AbsensiPintar" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+         <item name="colorPrimary">@color/birutua</item>
+        <item name="android:statusBarColor">@color/birutua</item>
+    </style>
+
+    <style name="Theme.AbsensiPintar" parent="Base.Theme.AbsensiPintar" />
+</resources>

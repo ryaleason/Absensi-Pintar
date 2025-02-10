@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:background="@color/bg"
+    android:layout_height="match_parent"
+    tools:context=".MenuUtama">
+
+
+    <LinearLayout
+        android:id="@+id/statusBar"
+        android:orientation="vertical"
+        android:background="@color/birutua"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"/>
+
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:layout_below="@+id/statusBar"
+        android:id="@+id/viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+
+    <RelativeLayout
+        android:id="@+id/navbot"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:background="@color/white"
+        android:layout_height="55dp">
+
+
+
+
+        <GridLayout
+            android:layout_alignParentEnd="true"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:columnCount="4"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:id="@+id/home"
+                android:layout_marginTop="5dp"
+                android:layout_width="0dp"
+                android:orientation="vertical"
+                android:layout_columnWeight="1"
+                android:gravity="center"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:src="@drawable/home"
+                    android:layout_height="30dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:text="Home"
+                    android:textColor="@color/birutua"
+                    android:textSize="8dp"
+                    android:fontFamily="@font/popinssemibold"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/riwayat"
+                android:layout_marginTop="5dp"
+                android:layout_width="0dp"
+                android:orientation="vertical"
+                android:layout_columnWeight="1"
+                android:gravity="center"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:src="@drawable/listview"
+                    android:layout_height="30dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:text="Ajukan Acara"
+                    android:textColor="#999999"
+                    android:textSize="8dp"
+                    android:fontFamily="@font/popinssemibold"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ajukanAcara"
+                android:layout_marginTop="5dp"
+                android:layout_width="0dp"
+                android:orientation="vertical"
+                android:layout_columnWeight="1"
+                android:gravity="center"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:src="@drawable/listview"
+                    android:layout_height="30dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:text="Ajukan Acara"
+                    android:textColor="#999999"
+                    android:textSize="8dp"
+                    android:fontFamily="@font/popinssemibold"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/profile"
+                android:layout_marginTop="5dp"
+                android:layout_width="0dp"
+                android:orientation="vertical"
+                android:layout_columnWeight="1"
+                android:gravity="center"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:src="@drawable/costumer"
+                    android:layout_height="30dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:text="Profile"
+                    android:textColor="#999999"
+                    android:textSize="10dp"
+                    android:fontFamily="@font/popinssemibold"
+                    android:layout_height="wrap_content"/>
+
+
+            </LinearLayout>
+
+
+
+
+
+
+
+        </GridLayout>
+
+
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

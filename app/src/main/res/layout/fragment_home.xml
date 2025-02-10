@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".HomeFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
+
+
+
+        <LinearLayout
+            android:id="@+id/nav"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:background="@drawable/bgblue"
+            android:layout_height="210dp">
+
+            <FrameLayout
+                android:layout_gravity="bottom"
+                android:layout_width="match_parent"
+                android:layout_height="220dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_marginHorizontal="25dp"
+                    android:orientation="vertical"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="200dp"
+                        android:layout_marginTop="40dp"
+                        android:layout_gravity="center_vertical"
+                        android:text="Halo , Gabrial Fitrah Pradana"
+                        android:fontFamily="@font/popinssemibold"
+                        android:textColor="@color/white"
+                        android:textSize="25dp"
+                        android:layout_height="wrap_content"/>
+
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_marginHorizontal="60dp"
+                    android:gravity="center"
+                    android:layout_gravity="bottom"
+                    android:layout_width="match_parent"
+                    android:background="@drawable/bgmenuutaama"
+                    android:layout_height="70dp">
+
+                    <TextView
+                        android:id="@+id/waktu"
+                        android:layout_marginTop="5dp"
+                        android:layout_width="wrap_content"
+                        android:text="10 : 12 :30"
+                        android:textColor="@color/birutua"
+                        android:fontFamily="@font/popinssemibold"
+                        android:textSize="45dp"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+
+
+
+            </FrameLayout>
+
+
+        </LinearLayout>
+        <TextView
+            android:id="@+id/tanggal"
+            android:textColor="@color/black"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center"
+            android:text="Senin , 12 Januari 2025"
+            android:fontFamily="@font/popinssemibold"
+            android:layout_marginTop="10dp"
+            android:layout_height="wrap_content"/>
+
+        <LinearLayout
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_marginTop="19dp"
+            android:layout_marginHorizontal="5dp"
+            android:elevation="10dp"
+            android:layout_height="wrap_content">
+
+            <GridLayout
+                android:layout_width="match_parent"
+                android:columnCount="2"
+                android:layout_marginHorizontal="20dp"
+                android:layout_height="match_parent">
+
+
+
+                <androidx.cardview.widget.CardView
+                    app:cardCornerRadius="10dp"
+
+                    android:layout_width="0dp"
+                    android:layout_columnWeight="1"
+                    app:cardBackgroundColor="@color/white"
+                    android:layout_marginVertical="5dp"
+                    android:layout_height="90dp">
+
+                    <RelativeLayout
+
+                        android:layout_width="match_parent"
+                        android:orientation="vertical"
+                        android:layout_height="match_parent">
+
+                        <ImageView
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="5dp"
+                            android:layout_width="90dp"
+                            android:src="@drawable/fingerprintt"
+                            android:layout_height="68dp"/>
+
+
+                        <LinearLayout
+                            android:layout_marginBottom="3dp"
+                            android:layout_alignParentBottom="true"
+                            android:gravity="center"
+                            android:layout_marginTop="5dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+
+                            <ImageView
+                                android:layout_width="12dp"
+                                android:layout_marginRight="5dp"
+                                android:src="@drawable/enter"
+                                android:layout_height="12dp"/>
+
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:text="Absen Masuk"
+                                android:textColor="#999999"
+                                android:fontFamily="@font/popinssemibold"
+                                android:textSize="9dp"
+                                android:gravity="center"
+                                android:layout_height="15dp"/>
+
+                        </LinearLayout>
+
+
+                    </RelativeLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:layout_marginLeft="20dp"
+                    android:layout_columnWeight="1"
+                    android:layout_width="0dp"
+                    app:cardBackgroundColor="@color/white"
+                    android:layout_marginVertical="5dp"
+                    app:cardCornerRadius="10dp"
+                    android:layout_height="90dp">
+
+                    <RelativeLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:layout_marginHorizontal="10dp"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="20dp"
+                            android:layout_width="wrap_content"
+                            android:text="10 : 12 : 20"
+                            android:textColor="@color/birutua"
+                            android:fontFamily="@font/popinssemibold"
+                            android:textSize="27dp"
+                            android:layout_height="34dp"/>
+
+                        <LinearLayout
+                            android:layout_marginBottom="3dp"
+                            android:layout_alignParentBottom="true"
+                            android:gravity="center"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+
+                            <ImageView
+                                android:layout_width="12dp"
+                                android:layout_marginRight="5dp"
+                                android:src="@drawable/logout"
+                                android:layout_height="12dp"/>
+
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:text="Absen Keluar"
+                                android:textColor="#999999"
+                                android:fontFamily="@font/popinssemibold"
+                                android:textSize="9dp"
+                                android:gravity="center"
+                                android:layout_height="15dp"/>
+
+                        </LinearLayout>
+
+                    </RelativeLayout>
+
+                </androidx.cardview.widget.CardView>
+            </GridLayout>
+
+
+        </LinearLayout>
+
+
+        <LinearLayout
+
+            android:layout_marginHorizontal="25dp"
+            android:gravity="center"
+            android:background="@drawable/bgnotif"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:layout_width="160dp"
+                android:src="@drawable/waiting"
+                android:layout_height="170dp"/>
+
+
+            <TextView
+                android:layout_marginRight="5dp"
+                android:layout_width="160dp"
+                android:textSize="18dp"
+                android:textColor="@color/birutua"
+                android:fontFamily="@font/popinssemibold"
+                android:text="Segera Melakukan Absen Untuk Hari Ini !"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:textColor="@color/birutua"
+            android:layout_width="wrap_content"
+            android:text="History"
+            android:textSize="17dp"
+            android:layout_marginHorizontal="25dp"
+            android:layout_marginTop="15dp"
+            android:fontFamily="@font/popinmedium"
+            android:layout_height="wrap_content"/>
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_marginTop="10dp"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+</LinearLayout>
