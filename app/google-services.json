@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "933445611463",
+    "project_id": "absensipintarid",
+    "storage_bucket": "absensipintarid.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:933445611463:android:e0e93adbd4f4c4ff0fb3e2",
+        "android_client_info": {
+          "package_name": "com.example.absensipintar"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDBoRxf7A2qS9QXKHWX5GUa1Pdk1HP__1s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

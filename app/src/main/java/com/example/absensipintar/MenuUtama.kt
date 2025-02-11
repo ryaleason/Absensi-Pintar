@@ -25,7 +25,7 @@ class MenuUtama : AppCompatActivity() {
 
 
         b.home.setOnClickListener { viewPager2.currentItem = 0 }
-//        b.riwayatabsen.setOnClickListener { viewPager2.currentItem = 1 }
+        b.riwayat.setOnClickListener { viewPager2.currentItem = 1 }
         b.ajukanAcara.setOnClickListener {
             viewPager2.currentItem = 2
             b.ajukanAcara.isSelected = true
@@ -45,7 +45,7 @@ class MenuUtama : AppCompatActivity() {
         override fun createFragment(position: Int): Fragment {
             return when (position) {
                 0 -> HomeFragment()
-                1 -> HomeFragment()
+                1 -> RiwayatAbsenFragment()
                 2 -> AjukanIzinFragment()
                 3 -> HomeFragment()
                 else -> HomeFragment()

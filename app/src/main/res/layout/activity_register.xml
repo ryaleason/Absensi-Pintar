@@ -29,7 +29,7 @@
 
             <TextView
                 android:layout_width="wrap_content"
-                android:text="Login"
+                android:text="Register"
 
                 android:fontFamily="@font/popinssemibold"
                 android:textColor="@color/white"
@@ -40,7 +40,7 @@
             <TextView
                 android:textAlignment="center"
                 android:layout_width="240dp"
-                android:text="Silakan login untuk mengakses absensi kamu"
+                android:text="Register agar kamu mendapatkan "
                 android:fontFamily="@font/popinssemibold"
                 android:textColor="@color/white"
                 android:textSize="13dp"
@@ -76,7 +76,7 @@
                 <TextView
                     android:layout_gravity="bottom"
                     android:layout_width="wrap_content"
-                    android:text="Email"
+                    android:text="Username"
                     android:fontFamily="@font/popinssemibold"
                     android:textColor="#333333"
                     android:textSize="19dp"
@@ -113,16 +113,50 @@
 
 
                 <EditText
-                    android:id="@+id/email"
+                    android:id="@+id/username"
                     android:drawablePadding="10dp"
                     android:textColor="@color/black"
                     android:paddingLeft="10dp"
                     android:fontFamily="@font/popinssemibold"
-                    android:inputType="textEmailAddress"
+                    android:inputType="text"
                     android:layout_width="match_parent"
-                    android:drawableLeft="@drawable/mail"
+                    android:drawableLeft="@drawable/user"
                     android:layout_height="wrap_content"/>
 
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:layout_marginTop="10dp"
+                android:layout_width="wrap_content"
+                android:text="Email"
+                android:fontFamily="@font/popinssemibold"
+                android:textAlignment="center"
+                android:textColor="#333333"
+                android:textSize="19dp"
+                android:layout_height="wrap_content"/>
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:boxStrokeColor="@color/birutua"
+                android:textColorHint="#858585"
+                app:boxCornerRadiusTopEnd="10dp"
+                app:boxCornerRadiusTopStart="10dp"
+                app:boxCornerRadiusBottomEnd="10dp"
+                app:boxCornerRadiusBottomStart="10dp"
+                app:hintTextColor="@color/birutua">
+
+                <EditText
+                    android:id="@+id/email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textEmailAddress"
+                    android:drawablePadding="10dp"
+                    android:textColor="@color/black"
+                    android:paddingLeft="10dp"
+                    android:drawableLeft="@drawable/mail"
+                    android:fontFamily="@font/popinssemibold"/>
             </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -161,48 +195,19 @@
             </com.google.android.material.textfield.TextInputLayout>
 
 
-            <CheckBox
-                android:textColor="@color/black"
-                android:layout_width="wrap_content"
-                android:text="Ingat Saya"
-                android:fontFamily="@font/popinssemibold"
-                android:gravity="center_vertical"
-                android:layout_height="wrap_content"/>
-
             <androidx.cardview.widget.CardView
                 android:layout_marginHorizontal="50dp"
                 android:layout_width="match_parent"
                 app:cardCornerRadius="10dp"
                 app:cardBackgroundColor="@color/birutua"
                 app:cardElevation="5dp"
-                android:layout_marginTop="90dp"
-                android:layout_height="wrap_content">
-
-
-                <TextView
-                    android:id="@+id/login"
-                    android:textColor="@color/white"
-                    android:layout_width="match_parent"
-                    android:text="Masuk"
-                    android:gravity="center"
-                    android:fontFamily="@font/popinssemibold"
-                    android:textSize="20dp"
-                    android:layout_height="50dp"/>
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_marginHorizontal="50dp"
-                android:layout_width="match_parent"
-                app:cardCornerRadius="10dp"
-                app:cardBackgroundColor="@color/white"
-                app:cardElevation="5dp"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="50dp"
                 android:layout_height="wrap_content">
 
 
                 <TextView
                     android:id="@+id/register"
-                    android:textColor="@color/birutua"
+                    android:textColor="@color/white"
                     android:layout_width="match_parent"
                     android:text="Register"
                     android:gravity="center"
