@@ -82,7 +82,7 @@
 
                 <TextView
                     android:layout_width="wrap_content"
-                    android:text="Ajukan Acara"
+                    android:text="Riwayat Absen"
                     android:textColor="#999999"
                     android:textSize="8dp"
                     android:fontFamily="@font/popinssemibold"

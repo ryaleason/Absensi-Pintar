@@ -81,6 +81,7 @@ class Login : AppCompatActivity() {
                                     if (isAdmin) {
                                         val intent = Intent(this, Admin::class.java)
                                         getSharedPreferences("DATANAMA", MODE_PRIVATE).edit().putString("NAMA",nama).apply()
+                                        getSharedPreferences("DATAEMAIL", MODE_PRIVATE).edit().putString("EMAIL",email).apply()
                                         startActivity(intent)
                                         Toast.makeText(
                                             this,
@@ -91,6 +92,7 @@ class Login : AppCompatActivity() {
                                     } else {
                                         val intent = Intent(this, MenuUtama::class.java)
                                         getSharedPreferences("DATANAMA", MODE_PRIVATE).edit().putString("NAMA",nama).apply()
+                                        getSharedPreferences("DATAEMAIL", MODE_PRIVATE).edit().putString("EMAIL",email).apply()
                                         startActivity(intent)
                                         Toast.makeText(
                                             this,
@@ -112,4 +114,5 @@ class Login : AppCompatActivity() {
                 }
             }
     }
+
 }

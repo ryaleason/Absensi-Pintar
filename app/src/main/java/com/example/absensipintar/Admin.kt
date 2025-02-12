@@ -13,5 +13,7 @@ class Admin : AppCompatActivity() {
         val b = ActivityAdminBinding.inflate(layoutInflater)
         setContentView(b.root)
 
+
+
     }
 }

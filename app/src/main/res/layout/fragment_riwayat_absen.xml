@@ -61,9 +61,26 @@
 
 
     </LinearLayout>
+    <LinearLayout
+        android:id="@+id/riwayat"
+        android:layout_width="match_parent"
+        android:background="@drawable/riwayat"
+        android:gravity="center"
+        android:layout_marginHorizontal="25dp"
+        android:layout_marginVertical="5dp"
+        android:layout_height="120dp">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:textColor="#80256595"
+            android:text="Tidak ada riwayat sebelumnya"
+            android:fontFamily="@font/popinssemibold"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/ryc"
         android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>

@@ -47,7 +47,7 @@ class MenuUtama : AppCompatActivity() {
                 0 -> HomeFragment()
                 1 -> RiwayatAbsenFragment()
                 2 -> AjukanIzinFragment()
-                3 -> HomeFragment()
+                3 -> ProfileFragment()
                 else -> HomeFragment()
             }
         }

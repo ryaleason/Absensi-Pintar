@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="@drawable/bgprofile"
+    android:layout_height="match_parent"
+    tools:context=".ProfileFragment">
+
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_marginLeft="20dp"
+    android:layout_marginBottom="20dp"
+    android:layout_above="@+id/pro"
+    android:gravity="center_vertical"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/name"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:fontFamily="@font/popinssemibold"
+        android:text="Profile Kamu"
+        android:textColor="@color/white"
+        android:textSize="25dp" />
+
+    <ImageView
+        android:layout_width="25dp"
+        android:src="@drawable/userputih"
+        android:layout_marginBottom="4dp"
+        android:layout_marginLeft="10dp"
+        android:layout_height="25dp"/>
+</LinearLayout>
+
+        <LinearLayout
+
+            android:id="@+id/pro"
+            android:layout_width="match_parent"
+            android:layout_centerInParent="true"
+            android:background="@drawable/borderprofil"
+            android:orientation="vertical"
+            android:paddingVertical="15dp"
+            android:layout_marginHorizontal="20dp"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:textAlignment="center"
+                android:id="@+id/nama"
+                android:text="Gabrial Fitrah Pradana"
+                android:fontFamily="@font/popinssemibold"
+                android:textColor="@color/birutua"
+                android:textSize="24dp"
+                android:layout_height="wrap_content"/>
+
+            <GridLayout
+                android:layout_marginTop="10dp"
+                android:layout_marginHorizontal="10dp"
+                android:layout_width="match_parent"
+                android:columnCount="3"
+                android:layout_height="wrap_content">
+
+
+
+                <LinearLayout
+                    android:background="@drawable/borderprofil"
+                    android:layout_width="0dp"
+                    android:layout_columnWeight="1"
+                    android:orientation="vertical"
+                    android:layout_height="70dp">
+
+                    <LinearLayout
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_width="20dp"
+                        android:background="@color/birutua"
+                        android:layout_height="5dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:text="Hadir"
+                        android:textSize="9dp"
+                        android:layout_marginTop="5dp"
+                        android:fontFamily="@font/popinssemibold"
+                        android:textColor="#959595"
+                        android:layout_marginLeft="10dp"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:id="@+id/hadir"
+                        android:layout_width="wrap_content"
+                        android:text="19 Hari"
+                        android:textSize="18dp"
+                        android:fontFamily="@font/popinssemibold"
+                        android:textColor="@color/black"
+                        android:layout_marginLeft="10dp"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="0dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_columnWeight="1"
+                    android:background="@drawable/borderprofil"
+                    android:layout_height="70dp">
+
+                    <LinearLayout
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_width="20dp"
+                        android:background="#C77300"
+                        android:layout_height="5dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:text="Total Terlambat"
+                        android:textSize="9dp"
+                        android:layout_marginTop="5dp"
+                        android:fontFamily="@font/popinssemibold"
+                        android:textColor="#959595"
+                        android:layout_marginLeft="10dp"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:id="@+id/terlambat"
+                        android:layout_width="wrap_content"
+                        android:text="19 Hari"
+                        android:textSize="18dp"
+                        android:fontFamily="@font/popinssemibold"
+                        android:textColor="@color/black"
+                        android:layout_marginLeft="10dp"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:orientation="vertical"
+                    android:layout_columnWeight="1"
+                    android:background="@drawable/borderprofil"
+                    android:layout_height="70dp">
+
+                    <LinearLayout
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_width="20dp"
+                        android:background="#049F09"
+                        android:layout_height="5dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:text="Total Jam Kerja"
+                        android:textSize="9dp"
+                        android:layout_marginTop="5dp"
+                        android:fontFamily="@font/popinssemibold"
+                        android:textColor="#959595"
+                        android:layout_marginLeft="10dp"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:text="19 Hari"
+                        android:textSize="18dp"
+                        android:fontFamily="@font/popinssemibold"
+                        android:textColor="@color/black"
+                        android:layout_marginLeft="10dp"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+            </GridLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_marginHorizontal="20dp"
+                android:gravity="center_vertical"
+                android:layout_marginTop="15dp"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="23dp"
+                    android:src="@drawable/mailbiru"
+                    android:layout_height="30dp"/>
+
+                <TextView
+                    android:id="@+id/email"
+                    android:layout_marginLeft="10dp"
+                    android:textColor="#575353"
+                    android:fontFamily="@font/popinssemibold"
+                    android:layout_width="wrap_content"
+                    android:text="gabrial@gabrial"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_marginHorizontal="20dp"
+                android:gravity="center_vertical"
+                android:layout_marginTop="5dp"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="23dp"
+                    android:src="@drawable/phonebiru"
+                    android:layout_height="30dp"/>
+
+                <TextView
+                    android:layout_marginLeft="10dp"
+                    android:textColor="#575353"
+                    android:fontFamily="@font/popinssemibold"
+                    android:layout_width="wrap_content"
+                    android:text="003456789"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_marginHorizontal="20dp"
+                android:gravity="center_vertical"
+                android:layout_marginTop="5dp"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="23dp"
+                    android:src="@drawable/computerbiru"
+                    android:layout_height="30dp"/>
+
+                <TextView
+                    android:layout_marginLeft="10dp"
+                    android:textColor="#575353"
+                    android:background="#C0FFA9"
+                    android:fontFamily="@font/popinssemibold"
+                    android:layout_width="wrap_content"
+                    android:text="Dikantor"
+                    android:paddingHorizontal="10dp"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_marginTop="15dp"
+                android:layout_marginHorizontal="25dp"
+                android:layout_width="match_parent"
+                android:background="@drawable/map"
+                android:layout_height="200dp">
+                <fragment
+                    android:id="@+id/map"
+                    android:name="com.google.android.gms.maps.SupportMapFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/logout"
+        android:gravity="center"
+        android:fontFamily="@font/popinssemibold"
+        android:layout_width="match_parent"
+        android:layout_below="@+id/pro"
+        android:layout_marginTop="30dp"
+        android:textColor="@color/white"
+        android:text="Log Out"
+        android:background="@drawable/btnlogout"
+        android:layout_marginHorizontal="130dp"
+        android:layout_height="30dp"/>
+
+
+</RelativeLayout>
