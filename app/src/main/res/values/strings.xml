@@ -2,4 +2,13 @@
     <string name="app_name">Absensi Pintar</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string-array name="alasan_absen">
+        <item>Macet</item>
+        <item>Hujan</item>
+        <item>Ban Bocor</item>
+        <item>Lainnya</item>
+
+
+    </string-array>
 </resources>

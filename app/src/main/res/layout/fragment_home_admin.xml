@@ -3,8 +3,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:orientation="vertical"
+    android:background="@color/bg"
     android:layout_height="match_parent"
     tools:context=".HomeAdminFragment">
+<androidx.core.widget.NestedScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
 
     <LinearLayout
         android:id="@+id/nav"
@@ -23,6 +34,7 @@
             android:layout_height="wrap_content">
 
             <TextView
+                android:id="@+id/nama"
                 android:layout_width="200dp"
                 android:layout_gravity="center_vertical"
                 android:text="Halo , Gabrial Fitrah Pradana"
@@ -44,11 +56,10 @@
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="10dp"
             android:layout_width="match_parent"
-            android:columnCount="2"
+            android:columnCount="3"
             android:layout_height="wrap_content">
 
             <LinearLayout
-                android:layout_marginRight="20dp"
                 android:gravity="center"
                 android:orientation="vertical"
                 android:background="@drawable/bgnotif"
@@ -56,6 +67,7 @@
                 android:layout_height="90dp">
 
                 <TextView
+                    android:id="@+id/ajukanAcara"
                     android:layout_width="wrap_content"
                     android:textColor="@color/birutua"
                     android:textSize="40dp"
@@ -68,7 +80,7 @@
                     android:layout_width="wrap_content"
                     android:textColor="@color/birutua"
                     android:textSize="10dp"
-                    android:text="Ajukan acara"
+                    android:text="Izin acara"
                     android:layout_marginTop="5dp"
                     android:fontFamily="@font/popinssemibold"
                     android:layout_height="wrap_content"/>
@@ -76,7 +88,8 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_marginLeft="20dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
                 android:gravity="center"
                 android:orientation="vertical"
                 android:background="@drawable/bgnotif"
@@ -84,6 +97,7 @@
                 android:layout_height="90dp">
 
                 <TextView
+                    android:id="@+id/karyawanTerlambat"
                     android:layout_width="wrap_content"
                     android:textColor="@color/birutua"
                     android:textSize="40dp"
@@ -102,6 +116,33 @@
 
             </LinearLayout>
 
+            <LinearLayout
+                android:gravity="center"
+                android:orientation="vertical"
+                android:background="@drawable/bgnotif"
+                android:layout_columnWeight="1"
+                android:layout_height="90dp">
+
+                <TextView
+                    android:id="@+id/MengajukanAbsen"
+                    android:layout_width="wrap_content"
+                    android:textColor="@color/birutua"
+                    android:textSize="40dp"
+                    android:text="19"
+                    android:fontFamily="@font/popinssemibold"
+                    android:layout_height="50dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:textColor="@color/birutua"
+                    android:textSize="10dp"
+                    android:text="Mengajukan Absen"
+                    android:layout_marginTop="5dp"
+                    android:fontFamily="@font/popinssemibold"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+
 
         </GridLayout>
 
@@ -109,10 +150,12 @@
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/ryc"
+        android:nestedScrollingEnabled="false"
         android:layout_marginTop="10dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
-
+        android:layout_height="match_parent"/>
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>
 
 </LinearLayout>

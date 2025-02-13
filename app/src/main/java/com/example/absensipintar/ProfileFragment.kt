@@ -38,7 +38,7 @@ class ProfileFragment : Fragment() {
 
 
         b.logout.setOnClickListener {
-            startActivity(Intent(requireContext(),Login::class.java))
+            startActivity(Intent(requireContext(),PageAwal::class.java))
         }
         hitungbsen(userId,b)
         hitungterlambat(userId,b)

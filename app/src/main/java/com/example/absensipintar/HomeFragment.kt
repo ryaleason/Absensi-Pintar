@@ -1,7 +1,9 @@
     package com.example.absensipintar
 
     import android.animation.ObjectAnimator
+    import android.app.AlertDialog
     import android.content.Context
+    import android.content.Intent
     import android.content.pm.PackageManager
     import android.graphics.Color
     import android.location.Location
@@ -13,6 +15,7 @@
     import android.view.View
     import android.view.ViewGroup
     import android.view.animation.LinearInterpolator
+    import android.widget.LinearLayout
     import android.widget.TextView
     import android.widget.Toast
     import androidx.biometric.BiometricManager
@@ -83,12 +86,12 @@
 
 
             b.absenMasuk.setOnClickListener {
-               checkLokasi(userId,today,::checkFingerPrint)
+               checkLokasi(nama.toString(),userId,today,::checkFingerPrint)
             }
 
 
             b.absenKeluar.setOnClickListener {
-                checkLokasi(userId,today,::checkFingerPrintKeluar)
+                checkLokasi(nama.toString(),userId,today,::checkFingerPrintKeluar)
 
 
             }
@@ -109,7 +112,7 @@
             return b.root
         }
 
-        private fun checkLokasi(userId: String, today: String, callback: (String, String) -> Unit) {
+        private fun checkLokasi(nama: String,userId: String, today: String, callback: (String, String) -> Unit) {
             if (ActivityCompat.checkSelfPermission(
                     requireContext(),
                     android.Manifest.permission.ACCESS_FINE_LOCATION
@@ -129,13 +132,30 @@
                     if (jarak <= radiusAbsen) {
                         callback(userId, today)
                     } else {
-                        Toast.makeText(requireContext(), "Anda berada di luar area absen", Toast.LENGTH_SHORT).show()
+                        absendialog(nama)
                     }
                 } else {
                     Toast.makeText(requireContext(), "Gagal mendapatkan lokasi", Toast.LENGTH_SHORT).show()
                 }
             }
         }
+
+        private fun absendialog(nama: String) {
+            AlertDialog.Builder(requireContext())
+                .setTitle("Pengajuan Absen")
+                .setMessage("Anda berada di luar area absen. Apakah Anda ingin mengajukan pengajuan absen?")
+                .setPositiveButton("Ya") { _, _ ->
+
+                    val intent = Intent(requireContext(),pengajuanAbsen::class.java)
+                    intent.putExtra("NAMA",nama)
+                    startActivity(intent)
+                }
+                .setNegativeButton("Batal") { dialog, _ ->
+                    dialog.dismiss()
+                }
+                .show()
+        }
+
 
         private fun setupSwipeToRefresh(userId: String, today: String) {
             b.refres.setOnRefreshListener {
@@ -283,7 +303,7 @@
 
                     gagalFinger++
 
-                    if (gagalFinger >= 4) {
+                    if (gagalFinger >= 3) {
                         Toast.makeText(requireContext(), "Matikan HP Anda lalu absen kembali", Toast.LENGTH_LONG).show()
                         gagalFinger = 0
                     }
@@ -315,7 +335,7 @@
 
                     gagalFinger++
 
-                    if (gagalFinger >= 4) {
+                    if (gagalFinger >= 3) {
                         Toast.makeText(requireContext(), "Matikan HP Anda lalu absen kembali", Toast.LENGTH_LONG).show()
                         gagalFinger = 0
                     }
@@ -520,7 +540,15 @@
                 holder.waktuTiba.text = "Waktu tiba : ${absen.waktuMasuk}"
                 val batasWaktu = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).parse("08:00:00")
                 val waktuMasukDate = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).parse(absen.waktuMasuk ?: "")
-                holder.terlambatAtauTidak.text = if (waktuMasukDate.after(batasWaktu)) "Terlambat" else "Tepat Waktu"
+                if (waktuMasukDate.after(batasWaktu)) {
+                    holder.terlambatAtauTidak.text = "Terlambat"
+                    holder.terlambatAtauTidak.setTextColor(0xFF960000.toInt())
+                    holder.status.setBackgroundColor(android.graphics.Color.parseColor("#B80003"))
+                } else {
+                    holder.terlambatAtauTidak.text = "Tepat Waktu"
+                    holder.terlambatAtauTidak.setTextColor(0xFF049F09.toInt())
+                    holder.status.setBackgroundColor(android.graphics.Color.parseColor("#1DD600"))
+                }
             }
 
             override fun getItemCount(): Int {
@@ -534,6 +562,7 @@
                 val hari: TextView = itemView.findViewById(R.id.hari)
                 val waktuTiba: TextView = itemView.findViewById(R.id.waktuTiba)
                 val terlambatAtauTidak : TextView = itemView.findViewById(R.id.tepatWaktuAtauTidak)
+                val status : LinearLayout = itemView.findViewById(R.id.status)
             }
         }
 

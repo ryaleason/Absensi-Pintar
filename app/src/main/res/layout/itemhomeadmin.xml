@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <androidx.cardview.widget.CardView
+        android:layout_marginVertical="5dp"
+        app:cardCornerRadius="9dp"
+        app:cardBackgroundColor="@color/white"
+        android:layout_width="match_parent"
+        android:layout_marginHorizontal="20dp"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:paddingVertical="10dp"
+            android:layout_height="wrap_content">
+
+
+        <LinearLayout
+            android:id="@+id/klick"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="80dp"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/bulan"
+                    android:textColor="#999999"
+                    android:layout_width="wrap_content"
+                    android:text="Feb"
+                    android:fontFamily="@font/popinssemibold"
+                    android:textSize="17dp"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:id="@+id/tanggal"
+                    android:textColor="#999999"
+                    android:layout_width="wrap_content"
+                    android:text="18"
+                    android:fontFamily="@font/popinssemibold"
+                    android:textSize="17dp"
+                    android:layout_height="wrap_content"/>
+
+
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="1dp"
+                android:background="#999999"
+                android:layout_marginVertical="5dp"
+                android:layout_height="match_parent"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginLeft="10dp"
+                android:gravity="center_vertical"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp">
+
+
+                    <TextView
+                        android:textColor="@color/black"
+                        android:id="@+id/hari"
+                        android:layout_width="110dp"
+                        android:text="Seninffhtuhguthuthgutgt"
+                        android:textSize="20dp"
+                        android:fontFamily="@font/popinssemibold"
+
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:id="@+id/tepatWaktuAtauTidak"
+                        android:layout_marginTop="3dp"
+                        android:gravity="center"
+                        android:layout_marginLeft="10dp"
+                        android:layout_width="wrap_content"
+                        android:text="Tepat Waktu"
+                        android:textSize="10dp"
+                        android:fontFamily="@font/popinmedium"
+                        android:textColor="#00B40C"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/waktuTiba"
+                    android:layout_width="wrap_content"
+                    android:text="Waktu tiba : 15:27:39 "
+                    android:textSize="13dp"
+                    android:fontFamily="@font/popinssemibold"
+                    android:layout_height="wrap_content"/>
+
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:gravity="end"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:id="@+id/status"
+                    android:background="#35B300"
+                    android:layout_width="7dp"
+                    android:layout_height="match_parent"/>
+
+            </LinearLayout>
+        </LinearLayout>
+
+
+
+            <LinearLayout
+                android:visibility="gone"
+                android:id="@+id/detailLayout"
+                android:layout_marginHorizontal="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+
+
+                <LinearLayout
+                    android:layout_marginTop="10dp"
+                    android:background="#C1C1C1"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center_vertical"
+                    android:layout_height="wrap_content">
+
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_marginLeft="5dp"
+                        android:src="@drawable/logoutbiru"
+                        android:layout_height="20dp"/>
+
+                    <TextView
+                        android:id="@+id/absenKeluar"
+                        android:layout_marginLeft="7dp"
+                        android:fontFamily="@font/popinmedium"
+                        android:text="Belum Keluar"
+                        android:textColor="@color/black"
+                        android:textSize="12dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_marginTop="5dp"
+                    android:layout_width="match_parent"
+                    android:gravity="center_vertical"
+                    android:layout_height="wrap_content">
+
+
+                    <ImageView
+
+                        android:layout_width="20dp"
+                        android:src="@drawable/calendarbiru"
+                        android:layout_height="20dp"/>
+
+                    <TextView
+                        android:id="@+id/fulldate"
+                        android:layout_marginLeft="12dp"
+                        android:fontFamily="@font/popinmedium"
+                        android:text="Senin , 18 Februari 2025"
+                        android:textColor="@color/black"
+                        android:textSize="12dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_marginTop="5dp"
+                    android:layout_width="match_parent"
+                    android:gravity="center_vertical"
+                    android:layout_height="wrap_content">
+
+
+                    <ImageView
+
+                        android:layout_width="20dp"
+                        android:src="@drawable/mailbiru"
+                        android:layout_height="20dp"/>
+
+                    <TextView
+                        android:id="@+id/email"
+                        android:layout_marginLeft="12dp"
+                        android:fontFamily="@font/popinmedium"
+                        android:text="Gabrial Fitrah P"
+                        android:textColor="@color/black"
+                        android:textSize="12dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_marginTop="5dp"
+                    android:layout_width="match_parent"
+                    android:gravity="center_vertical"
+                    android:layout_height="wrap_content">
+
+
+                <ImageView
+
+                    android:layout_width="20dp"
+                    android:src="@drawable/computerbiru"
+                    android:layout_height="20dp"/>
+
+                    <TextView
+                        android:id="@+id/posisi"
+                        android:layout_marginLeft="12dp"
+                        android:fontFamily="@font/popinssemibold"
+                        android:text="Dikantor"
+                        android:textColor="#0FBD43"
+                        android:textSize="12dp"
+                        android:background="#D4FFD4"
+                        android:paddingHorizontal="10dp"
+                        android:layout_width="wrap_content"
+                        android:gravity="center"
+                        android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+
+                <LinearLayout
+                    android:layout_marginTop="10dp"
+                    android:layout_width="match_parent"
+                    android:gravity="end"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/btnPotongGaji"
+                        android:layout_width="wrap_content"
+                        android:text="Potong Gaji"
+                        android:background="@drawable/potonggaji"
+                        android:textSize="12dp"
+                        android:textColor="@color/white"
+                        android:paddingVertical="5dp"
+                        android:paddingHorizontal="10dp"
+                        android:fontFamily="@font/popinssemibold"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+
+</LinearLayout>
