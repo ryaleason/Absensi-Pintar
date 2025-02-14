@@ -6,6 +6,5 @@ data class AbsenModelAdmin (
     var nama: String = "",
     var email : String? = null,
     var waktuKeluar: String? = null,
-    var latitude : Double? = null,
-    var longitude : Double? = null
+
 )

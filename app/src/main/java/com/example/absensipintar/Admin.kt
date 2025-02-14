@@ -48,8 +48,8 @@ class Admin : AppCompatActivity() {
         override fun createFragment(position: Int): Fragment {
             return when (position) {
                 0 -> HomeAdminFragment()
-                1 -> RiwayatAbsenFragment()
-                2 -> AjukanIzinFragment()
+                1 -> RiwayatAdminFragment()
+                2 -> settingFragment()
                 3 -> ProfileFragment()
                 else -> HomeAdminFragment()
             }

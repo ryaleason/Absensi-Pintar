@@ -138,14 +138,12 @@ class RiwayatAbsenFragment : Fragment() {
 
                 absenAdapter.notifyDataSetChanged()
             }
-            .addOnFailureListener {
-                Toast.makeText(requireContext(), "Gagal mengambil data absen", Toast.LENGTH_SHORT).show()
-            }
+
     }
     class AbsenAdapter(private val absenList: List<AbsenModel>) : RecyclerView.Adapter<AbsenAdapter.AbsenViewHolder>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbsenViewHolder {
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.itemhome, parent, false)
+            val view = LayoutInflater.from(parent.context).inflate(R.layout.itemhomeadmin, parent, false)
             return AbsenViewHolder(view)
         }
 

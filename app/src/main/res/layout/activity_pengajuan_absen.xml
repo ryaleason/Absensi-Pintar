@@ -155,7 +155,7 @@
             android:fontFamily="@font/popinssemibold"
             android:textColor="@color/white"
             android:layout_width="120dp"
-            android:text="Submit"
+            android:text="Kirim"
             android:background="@color/birutua"
             android:layout_gravity="center"
             android:gravity="center"

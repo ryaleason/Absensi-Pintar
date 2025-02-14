@@ -11,4 +11,13 @@
 
 
     </string-array>
+
+    <string-array name="lokasi_absen">
+        <item>Rumah</item>
+        <item>Kantor</item>
+        <item>SMKN 6 Jember</item>
+        <item>SMKN 8 Jember</item>
+
+
+    </string-array>
 </resources>

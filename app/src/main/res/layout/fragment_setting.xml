@@ -1,14 +1,176 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/bgizin"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     tools:context=".settingFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
 
-</FrameLayout>
+
+    <LinearLayout
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_marginHorizontal="25dp"
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:gravity="center_vertical"
+            android:layout_height="wrap_content">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="Setting"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/popinssemibold"
+                android:textColor="@color/birutua"
+                android:textSize="25dp"
+                android:layout_height="wrap_content"/>
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_marginLeft="10dp"
+                android:src="@drawable/settings"
+                android:layout_height="30dp"/>
+
+        </LinearLayout>
+    </LinearLayout>
+
+
+
+    <LinearLayout
+        android:id="@+id/center"
+        android:layout_marginHorizontal="20dp"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_centerInParent="true"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:textColor="@color/black"
+            android:layout_width="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="Absen Masuk dan Keluar"
+            android:textSize="18dp"
+            android:textAlignment="center"
+            android:fontFamily="@font/popinssemibold"
+            android:layout_height="wrap_content"/>
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:columnCount="2"
+            android:layout_height="wrap_content">
+
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="0dp"
+            android:layout_columnWeight="1"
+            android:hint="Jam Awal"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="5dp"
+            app:hintTextColor="@color/birutua"
+            app:boxStrokeColor="@color/birutua"
+            app:boxBackgroundColor="@color/white"
+            android:layout_height="match_parent">
+
+            <EditText
+                android:id="@+id/jamAwal"
+                android:textColor="@color/black"
+                android:drawablePadding="10dp"
+                android:fontFamily="@font/popinmedium"
+                android:drawableLeft="@drawable/clock"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_columnWeight="1"
+                android:hint="Jam Akhir"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="5dp"
+                app:hintTextColor="@color/birutua"
+                app:boxStrokeColor="@color/birutua"
+                app:boxBackgroundColor="@color/white"
+                android:layout_height="match_parent">
+
+                <EditText
+                    android:id="@+id/jamAkhir"
+                    android:textColor="@color/black"
+                    android:drawablePadding="10dp"
+                    android:fontFamily="@font/popinmedium"
+                    android:drawableLeft="@drawable/clock"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+            </com.google.android.material.textfield.TextInputLayout>
+        </GridLayout>
+
+        <TextView
+            android:textColor="@color/black"
+            android:layout_width="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="Lokasi Absen"
+            android:textSize="18dp"
+            android:textAlignment="center"
+            android:drawablePadding="10dp"
+            android:fontFamily="@font/popinssemibold"
+            android:layout_height="wrap_content"/>
+
+        <Spinner
+            android:hapticFeedbackEnabled="true"
+            android:popupBackground="@color/white"
+            android:id="@+id/spinner_alasan"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:outlineAmbientShadowColor="@color/birutua"
+            android:background="@color/white"
+            android:entries="@array/lokasi_absen"/>
+
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:hint="Radius (Meter)"
+            android:layout_marginTop="10dp"
+            app:hintTextColor="@color/birutua"
+            app:boxStrokeColor="@color/birutua"
+            app:boxBackgroundColor="@color/white"
+            android:layout_height="match_parent">
+
+            <EditText
+                android:inputType="number"
+                android:maxLength="3"
+                android:textColor="@color/black"
+                android:drawablePadding="10dp"
+                android:fontFamily="@font/popinmedium"
+                android:drawableLeft="@drawable/clock"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/submit"
+            android:layout_marginTop="80dp"
+            android:fontFamily="@font/popinssemibold"
+            android:textColor="@color/white"
+            android:layout_width="120dp"
+            android:text="Kirim"
+            android:background="@color/birutua"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_height="50dp"/>
+    </LinearLayout>
+
+
+
+</RelativeLayout>

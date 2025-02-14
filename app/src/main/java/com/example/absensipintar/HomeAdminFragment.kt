@@ -28,13 +28,14 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.firestore.FirebaseFirestore
 import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 
 class HomeAdminFragment : Fragment() {
     private var gagalFinger = 0
     private lateinit var mMap: GoogleMap
     private lateinit var lokasipengguna: FusedLocationProviderClient
-    private lateinit var b: FragmentHomeBinding
+    private lateinit var b: FragmentHomeAdminBinding
     private val db = FirebaseFirestore.getInstance()
     private val handler = Handler(Looper.getMainLooper())
     private var rotationAnimator: ObjectAnimator? = null
@@ -46,7 +47,7 @@ class HomeAdminFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val b = FragmentHomeAdminBinding.inflate(layoutInflater)
+         b = FragmentHomeAdminBinding.inflate(layoutInflater)
         val nama = requireContext().getSharedPreferences("DATANAMA", Context.MODE_PRIVATE)
             .getString("NAMA", "");
         val today =
@@ -57,43 +58,71 @@ class HomeAdminFragment : Fragment() {
         b.ryc.adapter = absenAdapter
         b.ryc.layoutManager = LinearLayoutManager(requireContext())
         tampilabsen(b)
+        setupSwipeToRefresh(b)
         return b.root
     }
 
+    private fun setupSwipeToRefresh(b: FragmentHomeAdminBinding) {
+        b.refres.setOnRefreshListener {
+            tampilabsen(b)
+        }
+    }
+
     private fun tampilabsen(b: FragmentHomeAdminBinding) {
+        absenList.clear()
         var jumlahTerlambat = 0
+        var jumlahPengajuanAbsen = 0
+        var jumlahPengajuanIzin = 0
         val batasWaktu = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).parse("08:00:00")
 
-        db.collection("users").get()
-            .addOnSuccessListener { users ->
-                for (user in users) {
-                    val userId = user.id
-                    val username = user.getString("nama") ?: "Tidak Diketahui"
-                    val email = user.getString("email") ?: "Tidak Diketahui"
+        val todayDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
 
+        db.collection("users").get().addOnSuccessListener { users ->
+            val totalUsers = users.size()
+            var processedUsers = 0
 
+            for (user in users) {
+                val userId = user.id
+                val username = user.getString("nama") ?: "Tidak Diketahui"
+                val email = user.getString("email") ?: "Tidak Diketahui"
 
-                    db.collection("users").document(userId).collection("absen").get()
+                db.collection("users").document(userId).collection("absen").get()
+                    .addOnSuccessListener { absenDocs ->
+                        for (doc in absenDocs) {
+                            val absen = doc.toObject(AbsenModelAdmin::class.java)
+                            absen.nama = username
+                            absen.email = email
 
-                        .addOnSuccessListener { absenDocs ->
-                            for (doc in absenDocs) {
-                                val absen = doc.toObject(AbsenModelAdmin::class.java)
-                                absen.nama = username
-                                absen.email = email
+                            if (!absen.tanggal.isNullOrEmpty() && absen.tanggal == todayDate) {
                                 absenList.add(absen)
 
-                                val waktuMasukDate = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
-                                    .parse(absen.waktuMasuk ?: "")
+                                val waktuMasukDate: Date? = if (!absen.waktuMasuk.isNullOrEmpty()) {
+                                    SimpleDateFormat("HH:mm:ss", Locale.getDefault()).parse(absen.waktuMasuk)
+                                } else {
+                                    null
+                                }
 
                                 if (waktuMasukDate != null && waktuMasukDate.after(batasWaktu)) {
                                     jumlahTerlambat++
                                 }
                             }
-                            absenAdapter.notifyDataSetChanged()
-
-                            b.karyawanTerlambat.text = "$jumlahTerlambat"
                         }
-                }
+                        absenAdapter.notifyDataSetChanged()
+                        b.karyawanTerlambat.text = "$jumlahTerlambat"
+                    }
+            }
+        }
+
+        db.collectionGroup("pengajuanAbsen").get()
+            .addOnSuccessListener { pengajuanDocs ->
+                jumlahPengajuanAbsen = pengajuanDocs.size()
+                b.MengajukanAbsen.text = "$jumlahPengajuanAbsen"
+            }
+
+        db.collectionGroup("Izin").get()
+            .addOnSuccessListener { pengajuanDocs ->
+                jumlahPengajuanIzin = pengajuanDocs.size()
+                b.ajukanAcara.text = "$jumlahPengajuanIzin"
             }
     }
 
@@ -105,93 +134,96 @@ class HomeAdminFragment : Fragment() {
         RecyclerView.Adapter<AbsenAdapter.AbsenViewHolder>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbsenViewHolder {
-            val view = ItemhomeadminBinding.inflate(LayoutInflater.from(parent.context),parent,false)
-            return AbsenViewHolder(view)
+            val binding =
+                ItemhomeadminBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            return AbsenViewHolder(binding)
         }
 
         override fun onBindViewHolder(holder: AbsenViewHolder, position: Int) {
             val absen = absenList[position]
+            holder.bind(absen)
+        }
+
+        override fun getItemCount(): Int = absenList.size
+
+        inner class AbsenViewHolder( val b: ItemhomeadminBinding) :
+            RecyclerView.ViewHolder(b.root) {
+
+            fun bind(absen: AbsenModelAdmin) {
+                val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                val bulanFormat = SimpleDateFormat("MMM", Locale.getDefault())
+                val hariFormat = SimpleDateFormat("EEEE", Locale("id", "ID"))
+                val tanggalFormat = SimpleDateFormat("dd", Locale.getDefault())
 
 
-            val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-            val parsedDate = dateFormat.parse(absen.tanggal)
-            val bulanFormat = SimpleDateFormat("MMM", Locale.getDefault())
-            val hariFormat = SimpleDateFormat("EEEE", Locale("id", "ID"))
-            val tanggalFormat = SimpleDateFormat("dd", Locale.getDefault())
+                val parsedDate = absen.tanggal?.let { dateFormat.parse(it) }
 
-
-
-
-                holder.posisi.text = "Ada di sekitar kantor"
-                holder.posisi.setTextColor(0xFF0FBD0F.toInt())
-                holder.posisi.setBackgroundColor(android.graphics.Color.parseColor("#D4FFD4"))
-
-
-
-            holder.bulan.text = bulanFormat.format(parsedDate!!)
-            holder.tanggal.text = tanggalFormat.format(parsedDate)
-            holder.fulldate.text = "${hariFormat.format(parsedDate)}, ${tanggalFormat.format(parsedDate)} ${bulanFormat.format(parsedDate)} ${Calendar.getInstance().get(Calendar.YEAR)}"
-            holder.hari.text = absen.nama
-            holder.email.text = absen.email
-            holder.absenKeluar.text = absen.waktuKeluar ?: "Belum Absen Keluar"
-            holder.waktuTiba.text = "Waktu tiba : ${absen.waktuMasuk}"
-
-
-            val batasWaktu = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).parse("08:00:00")
-            val waktuMasukDate =
-                SimpleDateFormat("HH:mm:ss", Locale.getDefault()).parse(absen.waktuMasuk ?: "")
-
-            if (waktuMasukDate.after(batasWaktu)) {
-                holder.terlambatAtauTidak.text = "Terlambat"
-                holder.terlambatAtauTidak.setTextColor(0xFF960000.toInt())
-                holder.status.setBackgroundColor(android.graphics.Color.parseColor("#B80003"))
-            } else {
-                holder.terlambatAtauTidak.text = "Tepat Waktu"
-                holder.terlambatAtauTidak.setTextColor(0xFF049F09.toInt())
-                holder.status.setBackgroundColor(android.graphics.Color.parseColor("#1DD600"))
-            }
-
-            holder.klick.setOnClickListener {
-                if (holder.detailLayout.visibility == View.GONE) {
-                    holder.detailLayout.expandView()
+                if (parsedDate != null) {
+                    b.bulan.text = bulanFormat.format(parsedDate)
+                    b.tanggal.text = tanggalFormat.format(parsedDate)
+                    b.fulldate.text =
+                        "${hariFormat.format(parsedDate)}, ${tanggalFormat.format(parsedDate)} ${
+                            bulanFormat.format(parsedDate)
+                        } ${Calendar.getInstance().get(Calendar.YEAR)}"
                 } else {
-                    holder.detailLayout.collapseView()
+                    b.bulan.text = "N/A"
+                    b.tanggal.text = "N/A"
+                    b.fulldate.text = "Tanggal tidak tersedia"
                 }
 
-        }
-        }
+                b.hari.text = absen.nama
+                b.email.text = absen.email
+                if (absen.waktuKeluar != null){
+                    b.absenKeluar.text = absen.waktuKeluar
+                    b.posisi.text = "Tidak ada di kantor"
+                    b.posisi.setBackgroundColor(android.graphics.Color.parseColor("#FFD4D4"))
+                    b.posisi.setTextColor(0xFFBD0F0F.toInt())
+                }else{
+                    b.absenKeluar.text = "Belum Absen Keluar"
+                    b.posisi.text = "Berada di kantor"
+                    b.posisi.setBackgroundColor(android.graphics.Color.parseColor("#DCFFD4"))
+                    b.posisi.setTextColor(0xFF38BD0F.toInt())
+                }
+                val batasTidakDiketahui = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).parse("09:00:00")
 
-        private fun hitungJarak(start: LatLng, end: LatLng): Double {
-            val radiusBumi = 6371000.0
-            val dLat = Math.toRadians(end.latitude - start.latitude)
-            val dLon = Math.toRadians(end.longitude - start.longitude)
-            val a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                    Math.cos(Math.toRadians(start.latitude)) * Math.cos(Math.toRadians(end.latitude)) *
-                    Math.sin(dLon / 2) * Math.sin(dLon / 2)
-            val c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
-            return radiusBumi * c
-        }
 
-        override fun getItemCount(): Int {
-            return absenList.size
-        }
 
-        class AbsenViewHolder(val b : ItemhomeadminBinding) : RecyclerView.ViewHolder(b.root) {
-            val bulan: TextView = b.bulan
-            val status : LinearLayout = b.status
-            val tanggal: TextView = b.tanggal
-            val hari: TextView = b.hari
-            val waktuTiba: TextView = b.waktuTiba
-            val terlambatAtauTidak: TextView = b.tepatWaktuAtauTidak
-            val klick : LinearLayout = b.klick
-            val detailLayout : LinearLayout = b.detailLayout
-            val absenKeluar : TextView = b.absenKeluar
-            val posisi : TextView = b.posisi
-            val email = b.email
-            val fulldate : TextView = b.fulldate
+                b.waktuTiba.text = "Waktu tiba: ${absen.waktuMasuk ?: "Tidak tersedia"}"
+
+                val batasWaktu = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).parse("08:00:00")
+                val waktuMasukDate: Date? = if (!absen.waktuMasuk.isNullOrEmpty()) {
+                    SimpleDateFormat("HH:mm:ss", Locale.getDefault()).parse(absen.waktuMasuk)
+                } else {
+                    null
+                }
+
+
+                if (waktuMasukDate != null && batasWaktu != null) {
+                    if (waktuMasukDate.after(batasWaktu)) {
+                        b.tepatWaktuAtauTidak.text = "Terlambat"
+                        b.tepatWaktuAtauTidak.setTextColor(0xFF960000.toInt())
+                        b.status.setBackgroundColor(android.graphics.Color.parseColor("#B80003"))
+                    }
+                    else {
+                        b.tepatWaktuAtauTidak.text = "Tepat Waktu"
+                        b.tepatWaktuAtauTidak.setTextColor(0xFF049F09.toInt())
+                        b.status.setBackgroundColor(android.graphics.Color.parseColor("#1DD600"))
+                        b.btnPotongGaji.visibility = View.GONE
+                    }
+                } else {
+                    b.tepatWaktuAtauTidak.text = "Tidak tersedia"
+                    b.tepatWaktuAtauTidak.setTextColor(android.graphics.Color.GRAY)
+                }
+
+                b.klick.setOnClickListener {
+                    if (b.detailLayout.visibility == View.GONE) {
+                        b.detailLayout.expandView()
+                    } else {
+                        b.detailLayout.collapseView()
+                    }
+                }
+            }
         }
     }
-
-
 
 }

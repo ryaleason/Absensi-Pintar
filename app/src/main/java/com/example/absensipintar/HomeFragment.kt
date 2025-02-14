@@ -59,10 +59,8 @@
         private var rotationAnimator: ObjectAnimator? = null
         private lateinit var absenAdapter: AbsenAdapter
         private val absenList = mutableListOf<AbsenModel>()
-
-        private val lokasiAbsen = LatLng(-8.155307, 113.435150)
+        private var lokasiAbsen = LatLng(-8.155307, 113.435150)
         private val radiusAbsen = 500.0
-
         override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
@@ -78,13 +76,14 @@
             val userId = user?.uid ?: ""
 
 
+
             absenAdapter = AbsenAdapter(absenList)
             b.ryc.adapter = absenAdapter
             b.ryc.layoutManager = LinearLayoutManager(requireContext())
 
             b.riwayat.visibility
 
-
+            cekDanTambahkanAbsenOtomatis(userId,today)
             b.absenMasuk.setOnClickListener {
                checkLokasi(nama.toString(),userId,today,::checkFingerPrint)
             }
@@ -95,7 +94,7 @@
 
 
             }
-
+            hitungjarak()
             b.close.setOnClickListener {
                 b.tidakterlambat.visibility = View.GONE
             }
@@ -109,7 +108,59 @@
             initMap()
             setupSwipeToRefresh(userId, today)
             loadAbsenData()
+//            ambilLokasiDariFirebase()
             return b.root
+        }
+
+//        private fun ambilLokasiDariFirebase() {
+//            val lokasiRef = FirebaseFirestore.getInstance().collection("lokasi_absen").document("lokasi_terpilih")
+//
+//            lokasiRef.get()
+//                .addOnSuccessListener { document ->
+//                    if (document.exists()) {
+//                        val nama = document.getString("nama") ?: "Kantor"
+//                        val latitude = document.getDouble("latitude") ?: -8.155307
+//                        val longitude = document.getDouble("longitude") ?: 113.435150
+//
+//                        lokasiAbsen = LatLng(latitude, longitude)
+//                        Toast.makeText(requireContext(), "Lokasi diambil dari Firebase: $nama", Toast.LENGTH_SHORT).show()
+//                    }
+//                }
+//                .addOnFailureListener {
+//                    Toast.makeText(requireContext(), "Gagal mengambil lokasi dari Firebase!", Toast.LENGTH_SHORT).show()
+//                }
+//        }
+
+        private fun hitungjarak(){
+            if (ActivityCompat.checkSelfPermission(
+                    requireContext(),
+                    android.Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                Toast.makeText(requireContext(), "Izin lokasi tidak diberikan", Toast.LENGTH_SHORT).show()
+                return
+            }
+
+            lokasipengguna.lastLocation.addOnSuccessListener { location: Location? ->
+                if (location != null) {
+                    val jarak = hitungJarak(
+                        location.latitude, location.longitude,
+                        lokasiAbsen.latitude, lokasiAbsen.longitude
+                    )
+                    val jarakkm = jarak / 1000
+                    val jarakasli = String.format("%.2f", jarakkm)
+
+                    if (jarakkm > 2){
+                        b.jarak.text = "Jarak kamu dengan lokasi absen : ${jarakasli} Km"
+
+                    }else{
+                        b.jarak.visibility = View.GONE
+                    }
+
+                } else {
+                    Toast.makeText(requireContext(), "Gagal mendapatkan lokasi", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
 
         private fun checkLokasi(nama: String,userId: String, today: String, callback: (String, String) -> Unit) {
@@ -128,6 +179,9 @@
                         location.latitude, location.longitude,
                         lokasiAbsen.latitude, lokasiAbsen.longitude
                     )
+                    val jarakFormatted = String.format("%.2f", jarak)
+
+                    b.jarak.text = "Jarak kamu dengan lokasi absen : ${jarakFormatted}"
 
                     if (jarak <= radiusAbsen) {
                         callback(userId, today)
@@ -357,13 +411,16 @@
         private fun saveAbsenMasuk(nama: String, today: String) {
             val waktudetik = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Calendar.getInstance().time)
             val batasWaktu = "08:00:00"
+            val batasAbsenOtomatis = "08:40:00"
 
             val sdf = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
             val waktuAbsen = sdf.parse(waktudetik)
             val waktuBatas = sdf.parse(batasWaktu)
+            val waktuBatasOtomatis = sdf.parse(batasAbsenOtomatis)
 
             val absenData = hashMapOf(
                 "waktuMasuk" to waktudetik,
+
                 "tanggal" to today
             )
 
@@ -384,6 +441,7 @@
                 b.tidakterlambat.visibility = View.VISIBLE
             }
         }
+
 
         private fun saveAbsenKeluar(nama: String, today: String) {
             val waktudetik = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Calendar.getInstance().time)
@@ -527,7 +585,11 @@
 
 
                 val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-                val parsedDate = dateFormat.parse(absen.tanggal)
+                val parsedDate: Date? = if (!absen.tanggal.isNullOrEmpty()) {
+                    SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(absen.tanggal)
+                } else {
+                    null
+                }
                 val bulanFormat = SimpleDateFormat("MMM", Locale.getDefault())
                 val hariFormat = SimpleDateFormat("EEEE", Locale("id", "ID"))
                 val tanggalFormat = SimpleDateFormat("dd", Locale.getDefault())
@@ -539,8 +601,12 @@
                 holder.hari.text = hariFormat.format(parsedDate)
                 holder.waktuTiba.text = "Waktu tiba : ${absen.waktuMasuk}"
                 val batasWaktu = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).parse("08:00:00")
-                val waktuMasukDate = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).parse(absen.waktuMasuk ?: "")
-                if (waktuMasukDate.after(batasWaktu)) {
+                val waktuMasukDate: Date? = if (!absen.waktuMasuk.isNullOrEmpty()) {
+                    SimpleDateFormat("HH:mm:ss", Locale.getDefault()).parse(absen.waktuMasuk)
+                } else {
+                    null
+                }
+                if (waktuMasukDate != null && waktuMasukDate.after(batasWaktu)) {
                     holder.terlambatAtauTidak.text = "Terlambat"
                     holder.terlambatAtauTidak.setTextColor(0xFF960000.toInt())
                     holder.status.setBackgroundColor(android.graphics.Color.parseColor("#B80003"))
@@ -594,7 +660,35 @@
                 }
         }
 
+        private fun cekDanTambahkanAbsenOtomatis(nama: String, today: String) {
+            val currentTime = SimpleDateFormat(
+                "HH:mm:ss",
+                Locale.getDefault()
+            ).format(Calendar.getInstance().time)
+            val batasAbsenOtomatis = "08:40:00"
 
+            val sdf = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
+            val waktuSekarang = sdf.parse(currentTime)
+            val waktuBatasOtomatis = sdf.parse(batasAbsenOtomatis)
+
+            if (waktuSekarang.after(waktuBatasOtomatis)) {
+                val absenData = hashMapOf(
+                    "waktuMasuk" to "23:00:00",
+                    "waktuKeluar" to "23:00:00",
+                    "tanggal" to today
+                )
+
+                db.collection("users").document(nama).collection("absen").document(today)
+                    .get()
+                    .addOnSuccessListener { document ->
+                        if (!document.exists()) {
+                            db.collection("users").document(nama).collection("absen")
+                                .document(today)
+                                .set(absenData)
+                        }
+                    }
+            }
+        }
 
 
     }
