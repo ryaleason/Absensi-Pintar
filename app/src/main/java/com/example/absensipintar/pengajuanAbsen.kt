@@ -63,7 +63,6 @@ class pengajuanAbsen : AppCompatActivity() {
             if (imagePath == null){
                 Toast.makeText(this, "Ambil foto terlebih dahulu!", Toast.LENGTH_SHORT).show()
             }else{
-
                 simpan()
             }
 

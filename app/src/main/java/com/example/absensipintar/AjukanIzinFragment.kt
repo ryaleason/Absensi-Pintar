@@ -148,8 +148,9 @@ class AjukanIzinFragment : Fragment() {
     }
 
     private fun saveimagelokal(bitmap: Bitmap): String? {
-        val dateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(Date())
-        val fileName = "IMG_$dateFormat.jpg"
+        val dateFormat = SimpleDateFormat("dd-MM-yyyy-HH-mm-ss", Locale.getDefault()).format(Date())
+        val fileName = "IMG_${dateFormat}_${System.currentTimeMillis()}.jpg"
+
 
         val directory = File(requireContext().filesDir, "IzinImages")
         if (!directory.exists()) {

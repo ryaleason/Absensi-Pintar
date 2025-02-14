@@ -51,6 +51,7 @@ dependencies {
     implementation ("com.google.android.gms:play-services-maps:19.0.0")
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation ("com.google.android.gms:play-services-auth:20.7.0")
     implementation(libs.firebase.firestore)
     implementation("com.google.firebase:firebase-auth:22.3.0")
     implementation (libs.androidx.swiperefreshlayout)

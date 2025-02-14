@@ -606,14 +606,33 @@
                 } else {
                     null
                 }
-                if (waktuMasukDate != null && waktuMasukDate.after(batasWaktu)) {
-                    holder.terlambatAtauTidak.text = "Terlambat"
-                    holder.terlambatAtauTidak.setTextColor(0xFF960000.toInt())
-                    holder.status.setBackgroundColor(android.graphics.Color.parseColor("#B80003"))
+
+                if (waktuMasukDate != null) {
+                    val sdf = SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault())
+                    val waktuMasukString = sdf.format(waktuMasukDate)
+
+                    Log.d("DEBUG_WAKTU", "Waktu Masuk: $waktuMasukString")
+
+                    val batasAwalSecond = SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault()).parse("07:00:00.010")
+                    val batasAkhirSecond = SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault()).parse("07:00:00.030")
+
+                    if (waktuMasukDate.after(batasAwalSecond) && waktuMasukDate.before(batasAkhirSecond)) {
+                        holder.terlambatAtauTidak.text = "Izin"
+                        holder.terlambatAtauTidak.setTextColor(0xFF960000.toInt())
+                        holder.status.setBackgroundColor(android.graphics.Color.parseColor("#B80003"))
+                    } else if (waktuMasukDate.after(batasWaktu)) {
+                        holder.terlambatAtauTidak.text = "Terlambat"
+                        holder.terlambatAtauTidak.setTextColor(0xFF960000.toInt())
+                        holder.status.setBackgroundColor(android.graphics.Color.parseColor("#B80003"))
+                    } else {
+                        holder.terlambatAtauTidak.text = "Tepat Waktu"
+                        holder.terlambatAtauTidak.setTextColor(0xFF049F09.toInt())
+                        holder.status.setBackgroundColor(android.graphics.Color.parseColor("#1DD600"))
+                    }
                 } else {
-                    holder.terlambatAtauTidak.text = "Tepat Waktu"
-                    holder.terlambatAtauTidak.setTextColor(0xFF049F09.toInt())
-                    holder.status.setBackgroundColor(android.graphics.Color.parseColor("#1DD600"))
+                    holder.terlambatAtauTidak.text = "Tidak Hadir"
+                    holder.terlambatAtauTidak.setTextColor(0xFFFF0000.toInt())
+                    holder.status.setBackgroundColor(android.graphics.Color.parseColor("#FF0000"))
                 }
             }
 

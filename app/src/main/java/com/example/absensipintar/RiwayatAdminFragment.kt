@@ -2,6 +2,9 @@ package com.example.absensipintar
 
 import android.animation.ObjectAnimator
 import android.app.DatePickerDialog
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -13,6 +16,8 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.absensipintar.RiwayatAbsenFragment.AbsenAdapter
@@ -25,6 +30,7 @@ import com.example.absensipintar.utils.collapseView
 import com.example.absensipintar.utils.expandView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -57,8 +63,72 @@ class RiwayatAdminFragment : Fragment() {
             pilihtanggal()
         }
 
+        b.exportCSV.setOnClickListener {
+            exportToCSV()
+        }
+
         return b.root
     }
+
+    private fun checkPermissionAndExport() {
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
+            exportToCSV()
+        } else {
+            exportToCSV()
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == 100 && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            exportToCSV()
+        } else {
+            Toast.makeText(requireContext(), "Izin diperlukan untuk menyimpan file", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+
+    private fun exportToCSV() {
+        if (absenList.isEmpty()) {
+            Toast.makeText(requireContext(), "Tidak ada data untuk diekspor", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val fileName = "Riwayat_Absen.csv"
+        val csvHeader = "Nama,Email,Tanggal,Waktu Masuk,Waktu Keluar\n"
+        val csvData = StringBuilder().apply {
+            append(csvHeader)
+            for (absen in absenList) {
+                append("${absen.nama},${absen.email},${absen.tanggal},${absen.waktuMasuk ?: "-"},${absen.waktuKeluar ?: "-"}\n")
+            }
+        }
+
+        try {
+            val folder = requireContext().getExternalFilesDir(null) ?: requireContext().filesDir
+            val file = File(folder, fileName)
+
+            file.writeText(csvData.toString())
+
+            val uri = FileProvider.getUriForFile(requireContext(), "${requireContext().packageName}.provider", file)
+
+            val intent = Intent(Intent.ACTION_SEND).apply {
+                type = "text/csv"
+                putExtra(Intent.EXTRA_STREAM, uri)
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            }
+
+            startActivity(Intent.createChooser(intent, "Bagikan file CSV"))
+
+            Toast.makeText(requireContext(), "File disimpan di: ${file.absolutePath}", Toast.LENGTH_LONG).show()
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Toast.makeText(requireContext(), "Gagal menyimpan file: ${e.message}", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+
+
 
     private fun pilihtanggal() {
         val calendar = Calendar.getInstance()
@@ -175,9 +245,6 @@ class RiwayatAdminFragment : Fragment() {
         }
     }
 
-    private fun updateUI() {
-
-    }
 
     class AbsenAdapter(private val absenList: List<AbsenModelAdmin>) :
         RecyclerView.Adapter<AbsenAdapter.AbsenViewHolder>() {
@@ -238,6 +305,7 @@ class RiwayatAdminFragment : Fragment() {
                 if (waktuMasukDate != null && batasWaktu != null) {
                     if (waktuMasukDate.after(batasWaktu)) {
                         b.tepatWaktuAtauTidak.text = "Terlambat"
+                        b.btnPotongGaji.visibility = View.VISIBLE
                         b.tepatWaktuAtauTidak.setTextColor(0xFF960000.toInt())
                         b.status.setBackgroundColor(android.graphics.Color.parseColor("#B80003"))
                     }
@@ -249,6 +317,7 @@ class RiwayatAdminFragment : Fragment() {
                     }
                 } else {
                     b.tepatWaktuAtauTidak.text = "Tidak tersedia"
+                    b.btnPotongGaji.visibility = View.VISIBLE
                     b.tepatWaktuAtauTidak.setTextColor(android.graphics.Color.GRAY)
                 }
 
