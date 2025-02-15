@@ -8,6 +8,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.absensipintar.database.DatabaseSQLITE
 import com.example.absensipintar.databinding.ActivityRegisterBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -24,7 +25,7 @@ class Register : AppCompatActivity() {
         val username = b.username
         auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
-
+        b.register.text = "Login & Register"
         b.register.setOnClickListener {
             val email = b.email.text.toString()
             val password = b.password.text.toString()
@@ -41,7 +42,11 @@ class Register : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-
+            if (b.username.text.isEmpty()) {
+                b.username.error = "Username Harus Diisi"
+                b.username.requestFocus()
+                return@setOnClickListener
+            }
 
             if (password.isEmpty()) {
                 b.password.error = "Password Harus Diisi"
@@ -55,16 +60,22 @@ class Register : AppCompatActivity() {
                 return@setOnClickListener
             }
 
+            if (b.username.text.length < 4) {
+                b.username.error = "Username Minimal 4 Huruf"
+                b.username.requestFocus()
+                return@setOnClickListener
+            }
+
 
             val isAdmin = email == "admin@gmail.com"
 
 
-            RegisterFirebase(email, password, username.text.toString(), isAdmin)
+            RegisterFirebase(email, password, username.text.toString(), isAdmin,b)
         }
 
     }
 
-    private fun RegisterFirebase(email: String, password: String, nama: String, isAdmin: Boolean) {
+    private fun RegisterFirebase(email: String, password: String, nama: String, isAdmin: Boolean , b : ActivityRegisterBinding) {
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
@@ -84,15 +95,16 @@ class Register : AppCompatActivity() {
                             .set(userMap)
 
                             .addOnSuccessListener {
+                                val dbHelper = DatabaseSQLITE(this)
                                 Toast.makeText(this, "Register Berhasil", Toast.LENGTH_SHORT).show()
-                                startActivity(Intent(this, Login::class.java))
+                                startActivity(Intent(this, MenuUtama::class.java))
                             }
                             .addOnFailureListener { e ->
                                 Toast.makeText(this, "Gagal Menyimpan Data: ${e.message}", Toast.LENGTH_SHORT).show()
                             }
                     }
                 } else {
-                    Toast.makeText(this, "Gagal Register Firebase", Toast.LENGTH_SHORT).show()
+                    b.email.error = "Email Sudah Terdaftar"
                 }
             }
     }

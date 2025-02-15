@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".Profile">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:textAlignment="center"
+        android:id="@+id/nama"
+        android:text="Gabrial Fitrah Pradana"
+        android:fontFamily="@font/popinssemibold"
+        android:textColor="@color/birutua"
+        android:textSize="24dp"
+        android:layout_height="wrap_content"/>
+
+    <GridLayout
+        android:layout_marginTop="10dp"
+        android:layout_marginHorizontal="10dp"
+        android:layout_width="match_parent"
+        android:columnCount="2"
+        android:layout_height="wrap_content">
+
+
+
+        <LinearLayout
+            android:background="@drawable/borderprofil"
+            android:layout_width="0dp"
+            android:layout_columnWeight="1"
+            android:orientation="vertical"
+            android:layout_height="70dp">
+
+            <LinearLayout
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_width="20dp"
+                android:background="@color/birutua"
+                android:layout_height="5dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:text="Hadir"
+                android:textSize="9dp"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/popinssemibold"
+                android:textColor="#959595"
+                android:layout_marginLeft="10dp"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/hadir"
+                android:layout_width="wrap_content"
+                android:text="19 Hari"
+                android:textSize="18dp"
+                android:fontFamily="@font/popinssemibold"
+                android:textColor="@color/black"
+                android:layout_marginLeft="10dp"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_marginLeft="10dp"
+            android:layout_columnWeight="1"
+            android:background="@drawable/borderprofil"
+            android:layout_height="70dp">
+
+            <LinearLayout
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_width="20dp"
+                android:background="#C77300"
+                android:layout_height="5dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:text="Total Terlambat"
+                android:textSize="9dp"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/popinssemibold"
+                android:textColor="#959595"
+                android:layout_marginLeft="10dp"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/terlambat"
+                android:layout_width="wrap_content"
+                android:text="19 Hari"
+                android:textSize="18dp"
+                android:fontFamily="@font/popinssemibold"
+                android:textColor="@color/black"
+                android:layout_marginLeft="10dp"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+    </GridLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_marginHorizontal="20dp"
+        android:gravity="center_vertical"
+        android:layout_marginTop="15dp"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="23dp"
+            android:src="@drawable/mailbiru"
+            android:layout_height="30dp"/>
+
+        <TextView
+            android:id="@+id/email"
+            android:layout_marginLeft="10dp"
+            android:textColor="#575353"
+            android:fontFamily="@font/popinssemibold"
+            android:layout_width="wrap_content"
+            android:text="gabrial@gabrial"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_marginHorizontal="20dp"
+        android:gravity="center_vertical"
+        android:layout_marginTop="5dp"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="23dp"
+            android:src="@drawable/computerbiru"
+            android:layout_height="30dp"/>
+
+        <TextView
+            android:id="@+id/statuskantor"
+            android:layout_marginLeft="10dp"
+            android:textColor="#007800"
+            android:background="#C0FFA9"
+            android:fontFamily="@font/popinssemibold"
+            android:layout_width="wrap_content"
+            android:text="Dikantor"
+            android:paddingHorizontal="10dp"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/statustidakdikantor"
+            android:layout_marginLeft="10dp"
+            android:textColor="#920000"
+            android:background="#FFA9A9"
+            android:fontFamily="@font/popinssemibold"
+            android:layout_width="wrap_content"
+            android:text="Tidak Dikantor"
+            android:paddingHorizontal="10dp"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_marginTop="15dp"
+        android:layout_marginHorizontal="25dp"
+        android:layout_width="match_parent"
+        android:background="@drawable/map"
+        android:layout_height="200dp">
+        <fragment
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+
+</LinearLayout>

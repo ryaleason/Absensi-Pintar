@@ -3,102 +3,79 @@ package com.example.absensipintar
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.location.Location
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.fragment.app.FragmentActivity
+import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.example.absensipintar.Admin.MenuPagerAdapter
 import com.example.absensipintar.databinding.FragmentProfileBinding
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.play.core.integrity.b
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Locale
+import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.sin
+import kotlin.math.sqrt
 
 class ProfileFragment : Fragment() {
-    private lateinit var mMap: GoogleMap
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
+
     ): View? {
        val b = FragmentProfileBinding.inflate(layoutInflater)
-
-        val nama = requireContext().getSharedPreferences("DATANAMA", Context.MODE_PRIVATE).getString("NAMA","");
-        val email = requireContext().getSharedPreferences("DATAEMAIL", Context.MODE_PRIVATE).getString("EMAIL","");
-        b.nama.text = nama
-        val user = FirebaseAuth.getInstance().currentUser
-        val userId = user?.uid ?: ""
-        b.email.text = email
-
-
         b.logout.setOnClickListener {
             startActivity(Intent(requireContext(),PageAwal::class.java))
         }
-        hitungbsen(userId,b)
-        hitungterlambat(userId,b)
 
+        val viewPager2 = b.pro
+        val adapter = MenuPagerAdapter(requireActivity())
+        viewPager2.adapter = adapter
 
-        initMap()
+        viewPager2.isUserInputEnabled = true
+        b.refres.setOnRefreshListener {
+            parentFragmentManager.beginTransaction().detach(this).attach(this).commit()
+            b.refres.isRefreshing = false
+        }
+
         return b.root
     }
 
-    private fun hitungbsen(nama: String ,  b : FragmentProfileBinding) {
-        val db = FirebaseFirestore.getInstance()
-        db.collection("users").document(nama).collection("absen")
-            .get()
-            .addOnSuccessListener { documents ->
-                val jumlahAbsen = documents.size()
-                b.hadir.text = "${jumlahAbsen} Hari"
+
+
+    class MenuPagerAdapter(fragmentActivity: FragmentActivity) : FragmentStateAdapter(fragmentActivity) {
+        override fun getItemCount(): Int {
+            return 3
+        }
+
+        override fun createFragment(position: Int): Fragment {
+            return when (position) {
+                0 -> Profile()
+                1 -> RiwayatProfile()
+                2->ProfileIzin()
+                else -> Profile()
             }
-    }
-
-    private fun hitungterlambat(nama: String , b : FragmentProfileBinding) {
-        val db = FirebaseFirestore.getInstance()
-        val batasWaktu = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).parse("08:00:00")
-
-        db.collection("users").document(nama).collection("absen")
-            .get()
-            .addOnSuccessListener { documents ->
-                var jumlahTerlambat = 0
-
-                for (document in documents) {
-                    val waktumasuk = document.getString("waktuMasuk")
-                    if (!waktumasuk.isNullOrEmpty()) {
-                        val waktuMasukk = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).parse(waktumasuk)
-                        if (waktuMasukk != null && waktuMasukk.after(batasWaktu)) {
-                            jumlahTerlambat++
-                        }
-                    }
-                }
-
-                b.terlambat.text = "${jumlahTerlambat} Hari"
-            }
-
-    }
-
-
-
-
-    private fun enableMyLocation() {
-        if (ActivityCompat.checkSelfPermission(requireContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) ==
-            PackageManager.PERMISSION_GRANTED) {
-            mMap.isMyLocationEnabled = true
-        } else {
-            requestPermissions(arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), 1)
         }
     }
 
-    private fun initMap() {
-        val mapFragment = childFragmentManager.findFragmentById(R.id.map) as? SupportMapFragment
-        mapFragment?.getMapAsync { googleMap ->
-            mMap = googleMap
-            enableMyLocation()
-        }
-    }
+
 }

@@ -4,6 +4,8 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.widget.ViewPager2
+import com.example.absensipintar.databinding.ActivityAdminBinding
 import com.example.absensipintar.databinding.ActivityMenuUtamaBinding
 
 class MenuUtama : AppCompatActivity() {
@@ -17,10 +19,12 @@ class MenuUtama : AppCompatActivity() {
         viewPager2.adapter = adapter
 
 
-
-
-
-
+        viewPager2.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                updateTabUI(position, b)
+            }
+        })
 
 
 
@@ -28,9 +32,6 @@ class MenuUtama : AppCompatActivity() {
         b.riwayat.setOnClickListener { viewPager2.currentItem = 1 }
         b.ajukanAcara.setOnClickListener {
             viewPager2.currentItem = 2
-            b.ajukanAcara.isSelected = true
-            b.home.isSelected = false
-            b.profile.isSelected = false
         }
         b.profile.setOnClickListener { viewPager2.currentItem = 3 }
 
@@ -52,4 +53,38 @@ class MenuUtama : AppCompatActivity() {
             }
         }
     }
+
+    private fun updateTabUI(position: Int, b: ActivityMenuUtamaBinding) {
+        b.imgsetting.setImageResource(R.drawable.licensingabu)
+        b.imglist.setImageResource(R.drawable.todoabu)
+        b.imghome.setImageResource(R.drawable.homeabu)
+        b.imguser.setImageResource(R.drawable.user)
+
+        b.texthome.setTextColor(resources.getColor(R.color.abu))
+        b.textlist.setTextColor(resources.getColor(R.color.abu))
+        b.textsetting.setTextColor(resources.getColor(R.color.abu))
+        b.textuser.setTextColor(resources.getColor(R.color.abu))
+
+
+        if (position == 0) {
+            b.imghome.setImageResource(R.drawable.homebiru)
+            b.texthome.setTextColor(resources.getColor(R.color.birutua))
+        }
+
+        if (position == 1) {
+            b.imglist.setImageResource(R.drawable.todobiru)
+            b.textlist.setTextColor(resources.getColor(R.color.birutua))
+        }
+
+        if (position == 2) {
+            b.imgsetting.setImageResource(R.drawable.licensingbiru)
+            b.textsetting.setTextColor(resources.getColor(R.color.birutua))
+        }
+
+        if (position == 3) {
+            b.imguser.setImageResource(R.drawable.userbiru)
+            b.textuser.setTextColor(resources.getColor(R.color.birutua))
+        }
+    }
+
 }

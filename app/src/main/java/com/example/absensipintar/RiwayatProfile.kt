@@ -3,93 +3,50 @@ package com.example.absensipintar
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.absensipintar.AjukanIzinAdmin.AbsenAdapter
-import com.example.absensipintar.databinding.ActivityAjukanIzinAdminBinding
+import com.example.absensipintar.PengajuanAbsenAdmin.AbsenAdapter
 import com.example.absensipintar.databinding.ActivityPengajuanAbsenAdminBinding
+import com.example.absensipintar.databinding.FragmentRiwayatProfileBinding
 import com.example.absensipintar.databinding.ItemajukanabsenBinding
 import com.example.absensipintar.model.PengajuanAbsenModel
 import com.example.absensipintar.utils.collapseView
 import com.example.absensipintar.utils.expandView
-import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
-import kotlin.math.abs
 
-class PengajuanAbsenAdmin : AppCompatActivity() {
-
+class RiwayatProfile : Fragment() {
     private val db = FirebaseFirestore.getInstance()
     private lateinit var absenAdapter: AbsenAdapter
     private val absenList = mutableListOf<PengajuanAbsenModel>()
-    private lateinit var b: ActivityPengajuanAbsenAdminBinding
-    override fun onCreate(savedInstanceState: Bundle?) {
-        FirebaseApp.initializeApp(this)
-        super.onCreate(savedInstanceState)
-        b = ActivityPengajuanAbsenAdminBinding.inflate(layoutInflater)
-        setContentView(b.root)
+    private lateinit var b: FragmentRiwayatProfileBinding
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        b = FragmentRiwayatProfileBinding.inflate(layoutInflater)
+
 
         val user = FirebaseAuth.getInstance().currentUser
         val userId = user?.uid ?: ""
 
         Log.d("USERRID",userId)
-        loadAbsenData()
-
-        b.back.setOnClickListener {
-            finish()
-        }
+        loadAbsenData(userId)
 
         absenAdapter = AbsenAdapter(absenList,db)
         Log.d("MODELLIST",absenList.toString())
-        b.ryc.layoutManager = LinearLayoutManager(this)
+        b.ryc.layoutManager = LinearLayoutManager(requireContext())
         b.ryc.adapter = absenAdapter
 
+        return b.root
     }
-
-
-    private fun loadAbsenData() {
-        db.collectionGroup("pengajuanAbsen")
-            .get()
-            .addOnSuccessListener { documents ->
-                absenList.clear()
-                if (documents.isEmpty) {
-
-                    b.ryc.visibility = View.GONE
-                    return@addOnSuccessListener
-                }
-
-                for (document in documents) {
-                    val absen = document.toObject(PengajuanAbsenModel::class.java)
-                    absen.pengajuanAbsenId = document.id
-
-                    val pathSegments = document.reference.path.split("/")
-                    if (pathSegments.size >= 3) {
-                        absen.userId = pathSegments[pathSegments.size - 3]
-                    } else {
-                        absen.userId = ""
-                    }
-
-
-
-                    absenList.add(absen)
-                }
-
-                b.ryc.visibility = View.VISIBLE
-                absenAdapter.notifyDataSetChanged()
-            }
-
-    }
-
     class AbsenAdapter(private val absenList: List<PengajuanAbsenModel>, private val db: FirebaseFirestore) :
         RecyclerView.Adapter<AbsenAdapter.AbsenViewHolder>() {
 
@@ -121,8 +78,9 @@ class PengajuanAbsenAdmin : AppCompatActivity() {
                     b.bulan.text = bulanFormat.format(it)
                     b.tanggal.text = tanggalFormat.format(it)
                 }
-                b.namapendek.text = absen.nama
-                b.nama.text = absen.nama
+                b.namapendek.text = absen.alasan
+                b.formnama.visibility = View.GONE
+                b.formalasan.visibility = View.GONE
                 b.izinWaktu.text = "Jam : ${absen.jam}"
                 b.tanggalPengajuan.text = "Pengajuan: ${absen.tanggal_pengajuan}"
                 b.alasan.text = "Alasan: ${absen.alasan}"
@@ -145,14 +103,11 @@ class PengajuanAbsenAdmin : AppCompatActivity() {
                 cekStatus(absen)
 
 
-                b.setuju.setOnClickListener {
-                    updateIzin(absen, "Disetujui")
-                }
 
 
-                b.tidakSetuju.setOnClickListener {
-                    updateIzin(absen, "Ditolak")
-                }
+
+                b.setuju.visibility = View.GONE
+                b.tidakSetuju.visibility = View.GONE
             }
 
             private fun cekStatus(absen: PengajuanAbsenModel) {
@@ -229,5 +184,39 @@ class PengajuanAbsenAdmin : AppCompatActivity() {
                 userAbsenRef.set(izinData)
             }
         }
+    }
+
+
+    private fun loadAbsenData(userId : String) {
+        db.collection("users").document(userId).collection("pengajuanAbsen")
+            .get()
+            .addOnSuccessListener { documents ->
+                absenList.clear()
+                if (documents.isEmpty) {
+
+                    b.ryc.visibility = View.GONE
+                    return@addOnSuccessListener
+                }
+
+                for (document in documents) {
+                    val absen = document.toObject(PengajuanAbsenModel::class.java)
+                    absen.pengajuanAbsenId = document.id
+
+                    val pathSegments = document.reference.path.split("/")
+                    if (pathSegments.size >= 3) {
+                        absen.userId = pathSegments[pathSegments.size - 3]
+                    } else {
+                        absen.userId = ""
+                    }
+
+
+
+                    absenList.add(absen)
+                }
+
+                b.ryc.visibility = View.VISIBLE
+                absenAdapter.notifyDataSetChanged()
+            }
+
     }
 }

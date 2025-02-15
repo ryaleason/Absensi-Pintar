@@ -119,10 +119,6 @@ class pengajuanAbsen : AppCompatActivity() {
             .addOnSuccessListener {
                 Toast.makeText(this, "Izin berhasil diajukan!", Toast.LENGTH_SHORT).show()
             }
-            .addOnFailureListener { e ->
-                Toast.makeText(this, "Gagal menyimpan izin: ${e.message}", Toast.LENGTH_SHORT).show()
-                Log.e("FIRESTORE_ERROR", "Error: ${e.message}")
-            }
     }
 
     private val ambilgambar = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -158,7 +154,6 @@ class pengajuanAbsen : AppCompatActivity() {
             }
             Log.d("FILE", "Gambar disimpan di: ${file.absolutePath}")
             imagePath = file.absolutePath
-            Toast.makeText(this, "Gambar tersimpan!", Toast.LENGTH_LONG).show()
             file.absolutePath
         } catch (e: IOException) {
             e.printStackTrace()

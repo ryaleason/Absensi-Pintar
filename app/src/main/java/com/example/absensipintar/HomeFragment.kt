@@ -42,6 +42,7 @@
     import kotlin.math.sin
     import kotlin.math.sqrt
     import com.example.absensipintar.R
+    import com.example.absensipintar.database.DatabaseSQLITE
     import com.example.absensipintar.model.AbsenModel
     import com.google.android.gms.maps.model.Circle
     import com.google.android.gms.maps.model.CircleOptions
@@ -80,31 +81,46 @@
             val userId = user?.uid ?: ""
 
 
+            b.close2.setOnClickListener {
+                b.terlambat.visibility = View.GONE
+            }
 
             absenAdapter = AbsenAdapter(absenList,db,userId)
             b.ryc.adapter = absenAdapter
             b.ryc.layoutManager = LinearLayoutManager(requireContext())
-
+            b.jamTerlambat
             b.riwayat.visibility
 
             cekDanTambahkanAbsenOtomatis(userId,today)
             b.absenMasuk.setOnClickListener {
-               checkLokasi(nama.toString(),userId,today,::checkFingerPrint)
-            }
+                val calendar = Calendar.getInstance()
+                val jamSekarang = calendar.get(Calendar.HOUR_OF_DAY)
 
+                if (jamSekarang in 6..10) {
+                    checkLokasi(nama.toString(), userId, today, ::checkFingerPrint)
+                } else {
+                    Toast.makeText(context, "Absen masuk hanya bisa dilakukan dari jam 06:00 - 9:59", Toast.LENGTH_SHORT).show()
+                }
+            }
 
             b.absenKeluar.setOnClickListener {
-                checkLokasi(nama.toString(),userId,today,::checkFingerPrintKeluar)
+                val calendar = Calendar.getInstance()
+                val jamSekarang = calendar.get(Calendar.HOUR_OF_DAY)
 
-
+                if (jamSekarang >= 14) {
+                    checkLokasi(nama.toString(), userId, today, ::checkFingerPrintKeluar)
+                } else {
+                    Toast.makeText(context, "Absen keluar hanya bisa dilakukan mulai jam 14:00", Toast.LENGTH_SHORT).show()
+                }
             }
+
             hitungjarak()
             b.close.setOnClickListener {
                 b.tidakterlambat.visibility = View.GONE
             }
 
             b.close2.setOnClickListener {
-                b.tidakterlambat.visibility = View.GONE
+                b.terlambat.visibility = View.GONE
             }
 
             checkExistingAbsen(userId,today)
@@ -172,8 +188,11 @@
                             )
                             val jarakkm = jarak / 1000
                             val jarakasli = String.format("%.2f", jarakkm)
+                            val radiusKm = radiusAbsen / 1000.0
 
-                            if (jarakkm > radiusAbsen) {
+                            Log.d("DEBUGJARAK", "Jarak ke lokasi absen: $jarakkm km")
+
+                            if (jarakkm > radiusKm) {
                                 b.jarak.text = "Jarak kamu dengan lokasi absen : $jarakasli Km"
                                 b.jarak.visibility = View.VISIBLE
                             } else {
@@ -262,51 +281,69 @@
 
 
         private fun checkExistingAbsen(nama: String, today: String) {
-            db.collection("users").document(nama).collection("absen").document(today)
+            val userRef = db.collection("users").document(nama)
+
+            userRef.collection("lokasi").document("6fOQUBZPrU31eRR5uSKS")
                 .get()
-                .addOnSuccessListener { document ->
-                    if (document.exists()) {
-                        val waktuMasuk = document.getString("waktuMasuk") ?: ""
-                        val waktuKeluar = document.getString("waktuKeluar") ?: ""
-                        val tanggalAbsen = document.getString("tanggal") ?: today
+                .addOnSuccessListener { lokasiDoc ->
+                    val batasAbsen = lokasiDoc.getString("batasMasukAbsen") ?: "08:00:00"
 
-                        val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(
-                            Date()
-                        )
+                    userRef.collection("absen").document(today)
+                        .get()
+                        .addOnSuccessListener { document ->
+                            if (!document.exists()) return@addOnSuccessListener
 
-                        if (tanggalAbsen != currentDate) {
-                            resetAbsen()
-                            return@addOnSuccessListener
-                        }
+                            val waktuMasuk = document.getString("waktuMasuk").orEmpty()
+                            val waktuKeluar = document.getString("waktuKeluar").orEmpty()
+                            val tanggalAbsen = document.getString("tanggal") ?: today
 
-                        if (waktuMasuk.isNotEmpty()) {
-                            b.absenMasuk.visibility = View.GONE
-                            b.textAbsen.visibility = View.VISIBLE
-                            b.textAbsen.text = waktuMasuk
-                            b.segeraAbsen.visibility = View.GONE
+                            val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
 
-                            val batasWaktu = "08:00:00"
+                            if (tanggalAbsen != currentDate) {
+                                resetAbsen()
+                                return@addOnSuccessListener
+                            }
+
                             val sdf = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
-                            val waktuAbsen = sdf.parse(waktuMasuk)
-                            val waktuBatas = sdf.parse(batasWaktu)
+                            val batasWaktu = sdf.parse(batasAbsen)
 
-                            if (waktuAbsen.after(waktuBatas)) {
-                                b.terlambat.visibility = View.VISIBLE
-                                b.tidakterlambat.visibility = View.GONE
-                            } else {
-                                b.terlambat.visibility = View.GONE
-                                b.tidakterlambat.visibility = View.VISIBLE
+                            if (waktuMasuk.isNotEmpty()) {
+                                b.absenMasuk.visibility = View.GONE
+                                b.textAbsen.apply {
+                                    visibility = View.VISIBLE
+                                    text = waktuMasuk
+                                }
+                                b.segeraAbsen.visibility = View.GONE
+
+                                val waktuAbsen = sdf.parse(waktuMasuk)
+
+                                if (waktuAbsen?.after(batasWaktu) == true) {
+                                    b.terlambat.visibility = View.VISIBLE
+                                    b.tidakterlambat.visibility = View.GONE
+
+
+                                    val selisihMillis = waktuAbsen.time - batasWaktu.time
+                                    val selisihJam = selisihMillis / (1000 * 60 * 60)
+                                    val selisihMenit = (selisihMillis / (1000 * 60)) % 60
+
+                                    b.jamTerlambat.text = "$selisihJam jam $selisihMenit menit"
+                                } else {
+                                    b.terlambat.visibility = View.GONE
+                                    b.tidakterlambat.visibility = View.VISIBLE
+                                }
+                            }
+
+                            if (waktuKeluar.isNotEmpty()) {
+                                b.absenKeluar.visibility = View.GONE
+                                b.absenKeluartext.apply {
+                                    visibility = View.VISIBLE
+                                    text = waktuKeluar
+                                }
                             }
                         }
-
-                        if (waktuKeluar.isNotEmpty()) {
-                            b.absenKeluar.visibility = View.GONE
-                            b.absenKeluartext.visibility = View.VISIBLE
-                            b.absenKeluartext.text = waktuKeluar
-                        }
-                    }
                 }
         }
+
 
         private fun resetAbsen() {
             b.absenMasuk.visibility = View.VISIBLE
@@ -455,9 +492,10 @@
             val waktuBatas = sdf.parse(batasWaktu)
             val waktuBatasOtomatis = sdf.parse(batasAbsenOtomatis)
 
+            val status = if (waktuAbsen.after(waktuBatas)) "Terlambat" else "Tepat Waktu"
             val absenData = hashMapOf(
                 "waktuMasuk" to waktudetik,
-
+                "status" to status,
                 "tanggal" to today
             )
 
@@ -477,11 +515,21 @@
             } else {
                 b.tidakterlambat.visibility = View.VISIBLE
             }
+
+            val dbSQLite = DatabaseSQLITE(requireContext())
+            dbSQLite.saveAbsen(nama, today, waktudetik, status  )
+
+            if (status == "Terlambat") {
+                b.terlambat.visibility = View.VISIBLE
+            } else {
+                b.tidakterlambat.visibility = View.VISIBLE
+            }
         }
 
 
         private fun saveAbsenKeluar(nama: String, today: String) {
             val waktudetik = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Calendar.getInstance().time)
+
             db.collection("users").document(nama).collection("absen").document(today)
                 .update("waktuKeluar", waktudetik)
                 .addOnSuccessListener {
@@ -489,8 +537,18 @@
                     b.absenKeluartext.visibility = View.VISIBLE
                     b.absenKeluartext.text = waktudetik
                     Toast.makeText(requireContext(), "Absen keluar berhasil!", Toast.LENGTH_SHORT).show()
+
+                    val dbSQLite = DatabaseSQLITE(requireContext())
+                    val success = dbSQLite.saveKeluar(nama, today, waktudetik)
+                    if (!success) {
+                        Toast.makeText(requireContext(), "Gagal menyimpan ke SQLite", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                .addOnFailureListener {
+                    Toast.makeText(requireContext(), "Gagal absen keluar!", Toast.LENGTH_SHORT).show()
                 }
         }
+
 
         override fun onResume() {
             super.onResume()
@@ -634,82 +692,121 @@
 
             override fun onBindViewHolder(holder: AbsenViewHolder, position: Int) {
                 val absen = absenList[position]
+
                 if (!absen.tanggal_awal.isNullOrEmpty() && !absen.tanggal_akhir.isNullOrEmpty()) {
                     CekIzin(userId, absen.tanggal, db, absen.tanggal_awal, absen.tanggal_akhir)
                 }
-                Log.d("USERRID",userId)
 
-                holder.waktuTiba.text = "Waktu tiba : ${absen.waktuMasuk}"
+                Log.d("USERRID", userId)
+
+                holder.waktuTiba.text = "Waktu tiba : ${absen.waktuMasuk ?: "-"}"
 
                 if (absen.waktuMasuk == "01:10:10") {
                     holder.terlambatAtauTidak.text = "Izin Acara"
                     holder.terlambatAtauTidak.setTextColor(0xFF676767.toInt())
-                    holder.waktuTiba.text = "Izin : ${absen.tanggal_awal} sd ${absen.tanggal_akhir}"
+                    holder.waktuTiba.text = "Izin : ${absen.tanggal_awal ?: "-"} sd ${absen.tanggal_akhir ?: "-"}"
                     holder.status.setBackgroundColor(android.graphics.Color.parseColor("#656565"))
                 }
 
-                val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-                val parsedDate: Date? = if (!absen.tanggal.isNullOrEmpty()) {
-                    SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(absen.tanggal)
-                } else {
-                    null
-                }
-                val bulanFormat = SimpleDateFormat("MMM", Locale.getDefault())
-                val hariFormat = SimpleDateFormat("EEEE", Locale("id", "ID"))
-                val tanggalFormat = SimpleDateFormat("dd", Locale.getDefault())
-
-
-
-                holder.bulan.text = bulanFormat.format(parsedDate!!)
-                holder.tanggal.text = tanggalFormat.format(parsedDate)
-                holder.hari.text = hariFormat.format(parsedDate)
-                holder.waktuTiba.text = "Waktu tiba : ${absen.waktuMasuk}"
-                val batasWaktu = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).parse("08:00:00")
-                val waktuMasukDate: Date? = if (!absen.waktuMasuk.isNullOrEmpty()) {
-                    SimpleDateFormat("HH:mm:ss", Locale.getDefault()).parse(absen.waktuMasuk)
-                } else {
-                    null
+                val parsedDate = absen.tanggal?.let {
+                    try {
+                        SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(it)
+                    } catch (e: Exception) {
+                        Log.e("DateError", "Format tanggal salah: $it")
+                        null
+                    }
                 }
 
-                if (waktuMasukDate != null) {
-                    val sdf = SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault())
-                    val waktuMasukString = sdf.format(waktuMasukDate)
+                if (parsedDate != null) {
+                    val bulanFormat = SimpleDateFormat("MMM", Locale.getDefault())
+                    val hariFormat = SimpleDateFormat("EEEE", Locale("id", "ID"))
+                    val tanggalFormat = SimpleDateFormat("dd", Locale.getDefault())
 
-                    Log.d("DEBUG_WAKTU", "Waktu Masuk: $waktuMasukString")
+                    holder.bulan.text = bulanFormat.format(parsedDate)
+                    holder.tanggal.text = tanggalFormat.format(parsedDate)
+                    holder.hari.text = hariFormat.format(parsedDate)
+                } else {
+                    holder.bulan.text = "-"
+                    holder.tanggal.text = "-"
+                    holder.hari.text = "-"
+                }
 
-                    val batasAwalSecond = SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault()).parse("01:10:09.00")
-                    val batasAkhirSecond = SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault()).parse("01:10:12.00")
+                val lokasiRef = FirebaseFirestore.getInstance().collection("users")
+                    .document("U3KAdLt2qOY9k948AOaqFAZGvvf1").collection("lokasi")
+                    .document("6fOQUBZPrU31eRR5uSKS")
 
-                    if (absen.alasan != null){
-                        holder.terlambatAtauTidak.text = "Izin Terlambat"
-                        holder.terlambatAtauTidak.setTextColor(0xFF676767.toInt())
-                    }else {
-                        if (waktuMasukDate.after(batasAwalSecond) && waktuMasukDate.before(
-                                batasAkhirSecond
-                            )
-                        ) {
-                            holder.terlambatAtauTidak.text = "Izin Acara"
-                            holder.terlambatAtauTidak.setTextColor(0xFF676767.toInt())
-                            holder.waktuTiba.text =
-                                "Izin : ${absen.tanggal_awal} sd ${absen.tanggal_akhir}"
+                lokasiRef.get().addOnSuccessListener { document ->
+                    if (document.exists()) {
+                        val batasWaktuData = document.getString("batasMasukAbsen") ?: "08:00:00"
+                        val batasWaktu = try {
+                            SimpleDateFormat("HH:mm:ss", Locale.getDefault()).parse(batasWaktuData)
+                        } catch (e: Exception) {
+                            Log.e("ParseError", "Gagal parsing batas waktu: $batasWaktuData")
+                            null
+                        }
 
-                            holder.status.setBackgroundColor(android.graphics.Color.parseColor("#656565"))
-                        } else if (waktuMasukDate.after(batasWaktu)) {
-                            holder.terlambatAtauTidak.text = "Terlambat"
-                            holder.terlambatAtauTidak.setTextColor(0xFF960000.toInt())
-                            holder.status.setBackgroundColor(android.graphics.Color.parseColor("#B80003"))
+                        val waktuMasukDate = absen.waktuMasuk?.let {
+                            try {
+                                SimpleDateFormat("HH:mm:ss", Locale.getDefault()).parse(it)
+                            } catch (e: Exception) {
+                                Log.e("ParseError", "Gagal parsing waktu masuk: $it")
+                                null
+                            }
+                        }
+
+                        if (waktuMasukDate != null && batasWaktu != null) {
+                            val sdf = SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault())
+                            val waktuMasukString = sdf.format(waktuMasukDate)
+
+                            Log.d("DEBUG_WAKTU", "Waktu Masuk: $waktuMasukString")
+
+                            val batasAwalSecond = SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault()).parse("01:10:09.00")
+                            val batasAkhirSecond = SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault()).parse("01:10:12.00")
+
+                            if (absen.alasan != null) {
+                                if (absen.alasan == "Macet" || absen.alasan == "Hujan" || absen.alasan == "Ban Bocor" || absen.alasan == "Lainnya"){
+
+                                holder.terlambatAtauTidak.text = "Izin Terlambat"
+                                holder.terlambatAtauTidak.setTextColor(0xFF676767.toInt())
+                                }else{
+                                    holder.terlambatAtauTidak.text = "Izin Acara"
+                                    holder.terlambatAtauTidak.setTextColor(0xFF676767.toInt())
+                                    holder.waktuTiba.text =
+                                        "Izin : ${absen.tanggal_awal ?: "-"} sd ${absen.tanggal_akhir ?: "-"}"
+
+                                }
+
+                            } else {
+                                when {
+                                    waktuMasukDate.after(batasAwalSecond) && waktuMasukDate.before(batasAkhirSecond) -> {
+                                        holder.terlambatAtauTidak.text = "Izin Acara"
+                                        holder.terlambatAtauTidak.setTextColor(0xFF676767.toInt())
+
+                                        holder.status.setBackgroundColor(android.graphics.Color.parseColor("#656565"))
+                                    }
+
+                                    waktuMasukDate.after(batasWaktu) -> {
+                                        holder.terlambatAtauTidak.text = "Terlambat"
+                                        holder.terlambatAtauTidak.setTextColor(0xFF960000.toInt())
+                                        holder.status.setBackgroundColor(android.graphics.Color.parseColor("#B80003"))
+                                    }
+
+                                    else -> {
+                                        holder.terlambatAtauTidak.text = "Tepat Waktu"
+                                        holder.terlambatAtauTidak.setTextColor(0xFF049F09.toInt())
+                                        holder.status.setBackgroundColor(android.graphics.Color.parseColor("#1DD600"))
+                                    }
+                                }
+                            }
                         } else {
-                            holder.terlambatAtauTidak.text = "Tepat Waktu"
-                            holder.terlambatAtauTidak.setTextColor(0xFF049F09.toInt())
-                            holder.status.setBackgroundColor(android.graphics.Color.parseColor("#1DD600"))
+                            holder.terlambatAtauTidak.text = "Tidak Hadir"
+                            holder.terlambatAtauTidak.setTextColor(0xFFFF0000.toInt())
+                            holder.status.setBackgroundColor(android.graphics.Color.parseColor("#FF0000"))
                         }
                     }
-                } else {
-                    holder.terlambatAtauTidak.text = "Tidak Hadir"
-                    holder.terlambatAtauTidak.setTextColor(0xFFFF0000.toInt())
-                    holder.status.setBackgroundColor(android.graphics.Color.parseColor("#FF0000"))
                 }
             }
+
 
             private fun CekIzin(userId: String, today: String, db: FirebaseFirestore, tanggalAwal: String, tanggalAkhir: String) {
                 val sdf = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
@@ -794,7 +891,7 @@
                 "HH:mm:ss",
                 Locale.getDefault()
             ).format(Calendar.getInstance().time)
-            val batasAbsenOtomatis = "08:40:00"
+            val batasAbsenOtomatis = "12:00:00"
 
             val sdf = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
             val waktuSekarang = sdf.parse(currentTime)
@@ -802,8 +899,8 @@
 
             if (waktuSekarang.after(waktuBatasOtomatis)) {
                 val absenData = hashMapOf(
-                    "waktuMasuk" to "23:00:00",
-                    "waktuKeluar" to "23:00:00",
+                    "waktuMasuk" to "",
+                    "waktuKeluar" to "",
                     "tanggal" to today
                 )
 

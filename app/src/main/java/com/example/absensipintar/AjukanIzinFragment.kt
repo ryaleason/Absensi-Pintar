@@ -65,6 +65,10 @@ class AjukanIzinFragment : Fragment() {
 
         }
 
+        b.riwayatIzin.setOnClickListener {
+
+        }
+
         b.alasan.text
 
         return b.root
@@ -94,7 +98,8 @@ class AjukanIzinFragment : Fragment() {
             "tanggal_awal" to tanggalAwal,
             "tanggal_akhir" to tanggalAkhir,
             "tanggal_pengajuan" to currentDate,
-            "foto_path" to image
+            "foto_path" to image,
+            "izinAdmin" to "Pending"
         )
 
         firestore.collection("users").document(userId)
@@ -102,6 +107,7 @@ class AjukanIzinFragment : Fragment() {
             .add(izinData)
             .addOnSuccessListener {
                 Toast.makeText(requireContext(), "Izin berhasil diajukan!", Toast.LENGTH_SHORT).show()
+                startActivity(Intent(requireContext(),MenuUtama::class.java))
             }
     }
 
@@ -165,7 +171,6 @@ class AjukanIzinFragment : Fragment() {
                 outputStream.flush()
             }
             Log.d("FILE", "Gambar disimpan di: ${file.absolutePath}")
-            Toast.makeText(requireContext(), "Gambar Tersimpan!", Toast.LENGTH_LONG).show()
             file.absolutePath
         } catch (e: IOException) {
             e.printStackTrace()

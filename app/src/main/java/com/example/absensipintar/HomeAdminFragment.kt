@@ -74,6 +74,8 @@
         private fun setupSwipeToRefresh(b: FragmentHomeAdminBinding) {
             b.refres.setOnRefreshListener {
                 tampilabsen(b)
+                b.refres.isRefreshing = false
+
             }
         }
 
@@ -206,29 +208,38 @@
                         null
                     }
 
-                    val batasIzin = SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault()).parse("01:10:05.000")
-                    val batasIzinakhir = SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault()).parse("01:10:11.000")
-                    val batasWaktu = SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault()).parse("08:00:00.000")
+                    val batasIzin = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).parse("01:10:05")
+                    val batasIzinakhir = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).parse("01:10:11")
+                    val batasWaktu = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).parse("08:00:00")
 
-                    if (waktuMasukDate != null && batasWaktu != null) {
-                        if (waktuMasukDate.after(batasIzin) && waktuMasukDate.before(batasIzinakhir)) {
-                            b.tepatWaktuAtauTidak.text = "Izin"
-                            b.tepatWaktuAtauTidak.setTextColor(0xFF960000.toInt())
-                            b.status.setBackgroundColor(android.graphics.Color.parseColor("#B80003"))
-                        }else if (waktuMasukDate.after(batasWaktu)){
-                            b.tepatWaktuAtauTidak.text = "Terlambat"
-                            b.tepatWaktuAtauTidak.setTextColor(0xFF960000.toInt())
+                    if (absen.alasan != null) {
+                        if (absen.alasan == "Macet" || absen.alasan == "Hujan" || absen.alasan == "Ban Bocor" || absen.alasan == "Lainnya"){
+                            b.tepatWaktuAtauTidak.text = "Izin Absen"
+                            b.tepatWaktuAtauTidak.setTextColor(0xFFB7B7B7.toInt())
                             b.status.setBackgroundColor(android.graphics.Color.parseColor("#B80003"))
                         }
                         else {
-                            b.tepatWaktuAtauTidak.text = "Tepat Waktu"
-                            b.tepatWaktuAtauTidak.setTextColor(0xFF049F09.toInt())
-                            b.status.setBackgroundColor(android.graphics.Color.parseColor("#1DD600"))
+                            b.formkeluar.visibility = View.GONE
+                            b.formstatus.visibility = View.GONE
+                            b.tepatWaktuAtauTidak.text = "Izin Acara"
+                            b.tepatWaktuAtauTidak.setTextColor(0xFFB7B7B7.toInt())
+                            b.status.setBackgroundColor(android.graphics.Color.parseColor("#B7B7B7"))
                             b.btnPotongGaji.visibility = View.GONE
                         }
+
                     } else {
-                        b.tepatWaktuAtauTidak.text = "Tidak tersedia"
-                        b.tepatWaktuAtauTidak.setTextColor(android.graphics.Color.GRAY)
+                        if (waktuMasukDate != null) {
+
+                            if (waktuMasukDate.after(batasWaktu)) {
+                                b.tepatWaktuAtauTidak.text = "Terlambat"
+                                b.tepatWaktuAtauTidak.setTextColor(0xFF960000.toInt())
+                                b.status.setBackgroundColor(android.graphics.Color.parseColor("#B80003"))
+                            } else {
+                                b.tepatWaktuAtauTidak.text = "Tepat Waktu"
+                                b.tepatWaktuAtauTidak.setTextColor(0xFF17AD00.toInt())
+                                b.status.setBackgroundColor(android.graphics.Color.parseColor("#17AD00"))
+                            }
+                        }
                     }
 
                     b.klick.setOnClickListener {

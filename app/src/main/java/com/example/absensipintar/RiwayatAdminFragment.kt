@@ -67,7 +67,10 @@ class RiwayatAdminFragment : Fragment() {
             exportToCSV()
         }
 
-        return b.root
+
+
+
+            return b.root
     }
 
     private fun checkPermissionAndExport() {
@@ -165,7 +168,7 @@ class RiwayatAdminFragment : Fragment() {
 
             for (user in users) {
                 val userId = user.id
-
+                val nama = user.getString("nama") ?: "Tidak Diketahui"
                 db.collection("users").document(userId).collection("absen")
                     .whereGreaterThanOrEqualTo("tanggal", tanggalAwal)
                     .whereLessThanOrEqualTo("tanggal", tanggalAkhir)
@@ -173,6 +176,7 @@ class RiwayatAdminFragment : Fragment() {
                     .addOnSuccessListener { absenDocs ->
                         for (doc in absenDocs) {
                             val absen = doc.toObject(AbsenModelAdmin::class.java)
+                            absen.nama = nama
                             absenList.add(absen)
                         }
 
@@ -264,68 +268,90 @@ class RiwayatAdminFragment : Fragment() {
             RecyclerView.ViewHolder(b.root) {
 
             fun bind(absen: AbsenModelAdmin) {
-                val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-                val parsedDate = absen.tanggal?.let { dateFormat.parse(it) }
 
-                parsedDate?.let {
-                    val bulanFormat = SimpleDateFormat("MMM", Locale.getDefault())
-                    val tanggalFormat = SimpleDateFormat("dd", Locale.getDefault())
-                    val hariFormat = SimpleDateFormat("EEEE", Locale("id", "ID"))
-
-                    b.bulan.text = bulanFormat.format(it)
-                    b.tanggal.text = tanggalFormat.format(it)
-                    b.fulldate.text = "${hariFormat.format(it)}, ${tanggalFormat.format(it)} ${bulanFormat.format(it)}"
-                }
-
-                b.hari.text = absen.nama
-                b.email.text = absen.email
-                b.waktuTiba.text = "Waktu tiba: ${absen.waktuMasuk ?: "Tidak tersedia"}"
-
-
-                val batasWaktu = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).parse("08:00:00")
-                val waktuMasukDate: Date? = if (!absen.waktuMasuk.isNullOrEmpty()) {
-                    SimpleDateFormat("HH:mm:ss", Locale.getDefault()).parse(absen.waktuMasuk)
+                if (absen.tanggal.isNullOrEmpty()) {
+                    b.bulan.text = "-"
+                    b.tanggal.text = "-"
+                    b.fulldate.text = "Tanggal tidak tersedia"
                 } else {
-                    null
-                }
+                    val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                    val parsedDate = absen.tanggal?.let { dateFormat.parse(it) }
 
-                if (absen.waktuKeluar != null){
-                    b.absenKeluar.text = absen.waktuKeluar
-                    b.posisi.text = "Tidak ada di kantor"
-                    b.posisi.setBackgroundColor(android.graphics.Color.parseColor("#FFD4D4"))
-                    b.posisi.setTextColor(0xFFBD0F0F.toInt())
-                }else{
-                    b.absenKeluar.text = "Belum Absen Keluar"
-                    b.posisi.text = "Berada di kantor"
-                    b.posisi.setBackgroundColor(android.graphics.Color.parseColor("#DCFFD4"))
-                    b.posisi.setTextColor(0xFF38BD0F.toInt())
-                }
+                    parsedDate?.let {
+                        val bulanFormat = SimpleDateFormat("MMM", Locale.getDefault())
+                        val tanggalFormat = SimpleDateFormat("dd", Locale.getDefault())
+                        val hariFormat = SimpleDateFormat("EEEE", Locale("id", "ID"))
 
-
-                if (waktuMasukDate != null && batasWaktu != null) {
-                    if (waktuMasukDate.after(batasWaktu)) {
-                        b.tepatWaktuAtauTidak.text = "Terlambat"
-                        b.btnPotongGaji.visibility = View.VISIBLE
-                        b.tepatWaktuAtauTidak.setTextColor(0xFF960000.toInt())
-                        b.status.setBackgroundColor(android.graphics.Color.parseColor("#B80003"))
+                        b.bulan.text = bulanFormat.format(it)
+                        b.tanggal.text = tanggalFormat.format(it)
+                        b.fulldate.text = "${hariFormat.format(it)}, ${tanggalFormat.format(it)} ${
+                            bulanFormat.format(it)
+                        }"
                     }
-                    else {
-                        b.tepatWaktuAtauTidak.text = "Tepat Waktu"
-                        b.tepatWaktuAtauTidak.setTextColor(0xFF049F09.toInt())
-                        b.status.setBackgroundColor(android.graphics.Color.parseColor("#1DD600"))
-                        b.btnPotongGaji.visibility = View.GONE
-                    }
-                } else {
-                    b.tepatWaktuAtauTidak.text = "Tidak tersedia"
-                    b.btnPotongGaji.visibility = View.VISIBLE
-                    b.tepatWaktuAtauTidak.setTextColor(android.graphics.Color.GRAY)
-                }
 
-                b.klick.setOnClickListener {
-                    if (b.detailLayout.visibility == View.GONE) {
-                        b.detailLayout.expandView()
+                    b.hari.text = absen.nama
+                    b.email.text = absen.email
+                    b.waktuTiba.text = "Waktu tiba: ${absen.waktuMasuk ?: "Tidak tersedia"}"
+
+
+                    val batasWaktu =
+                        SimpleDateFormat("HH:mm:ss", Locale.getDefault()).parse("08:00:00")
+                    val waktuMasukDate: Date? = if (!absen.waktuMasuk.isNullOrEmpty()) {
+                        SimpleDateFormat("HH:mm:ss", Locale.getDefault()).parse(absen.waktuMasuk)
                     } else {
-                        b.detailLayout.collapseView()
+                        null
+                    }
+
+                    if (absen.waktuKeluar != null) {
+                        b.absenKeluar.text = absen.waktuKeluar
+                        b.posisi.text = "Tidak ada di kantor"
+                        b.posisi.setBackgroundColor(android.graphics.Color.parseColor("#FFD4D4"))
+                        b.posisi.setTextColor(0xFFBD0F0F.toInt())
+                    } else {
+                        b.absenKeluar.text = "Belum Absen Keluar"
+                        b.posisi.text = "Berada di kantor"
+                        b.posisi.setBackgroundColor(android.graphics.Color.parseColor("#DCFFD4"))
+                        b.posisi.setTextColor(0xFF38BD0F.toInt())
+                    }
+
+
+                    if (absen.alasan != null) {
+                        if (absen.alasan == "Macet" || absen.alasan == "Hujan" || absen.alasan == "Ban Bocor" || absen.alasan == "Lainnya"){
+                            b.tepatWaktuAtauTidak.text = "Izin Absen"
+                            b.tepatWaktuAtauTidak.setTextColor(0xFFB7B7B7.toInt())
+                            b.status.setBackgroundColor(android.graphics.Color.parseColor("#B7B7B7"))
+                            b.btnPotongGaji.visibility = View.GONE
+                        }
+                        else {
+                            b.formkeluar.visibility = View.GONE
+                            b.formstatus.visibility = View.GONE
+                            b.tepatWaktuAtauTidak.text = "Izin Acara"
+                            b.tepatWaktuAtauTidak.setTextColor(0xFFB7B7B7.toInt())
+                            b.status.setBackgroundColor(android.graphics.Color.parseColor("#B7B7B7"))
+                            b.btnPotongGaji.visibility = View.GONE
+                        }
+
+                    } else {
+                        if (waktuMasukDate != null) {
+
+                            if (waktuMasukDate.after(batasWaktu)) {
+                                b.tepatWaktuAtauTidak.text = "Terlambat"
+                                b.tepatWaktuAtauTidak.setTextColor(0xFF960000.toInt())
+                                b.status.setBackgroundColor(android.graphics.Color.parseColor("#B80003"))
+                            } else {
+                                b.tepatWaktuAtauTidak.text = "Tepat Waktu"
+                                b.tepatWaktuAtauTidak.setTextColor(0xFF17AD00.toInt())
+                                b.status.setBackgroundColor(android.graphics.Color.parseColor("#17AD00"))
+                            }
+                        }
+                    }
+
+                    b.klick.setOnClickListener {
+                        if (b.detailLayout.visibility == View.GONE) {
+                            b.detailLayout.expandView()
+                        } else {
+                            b.detailLayout.collapseView()
+                        }
                     }
                 }
             }

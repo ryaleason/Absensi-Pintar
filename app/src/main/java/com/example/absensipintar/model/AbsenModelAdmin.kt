@@ -5,10 +5,11 @@ import com.google.android.gms.maps.model.LatLng
 
 data class AbsenModelAdmin (
     var tanggal: String = "",
-    var waktuMasuk: String? = null,
+    var waktuMasuk: String = "",
     var nama: String = "",
     var email : String? = null,
     var waktuKeluar: String? = null,
+    var alasan : String? = null
 
 ){
     val smkn6jember = LatLng(-8.155307, 113.435150)

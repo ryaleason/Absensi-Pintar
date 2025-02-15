@@ -125,6 +125,7 @@
 
 
             <LinearLayout
+                android:visibility="gone"
                 android:id="@+id/detailLayout"
                 android:layout_marginHorizontal="20dp"
                 android:layout_width="match_parent"
@@ -140,6 +141,7 @@
                     android:layout_height="1dp"/>
 
                 <LinearLayout
+                    android:id="@+id/formnama"
                     android:layout_width="match_parent"
                     android:layout_marginTop="10dp"
                     android:gravity="center_vertical"
@@ -189,6 +191,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/formalasan"
                     android:layout_marginTop="5dp"
                     android:layout_width="match_parent"
                     android:gravity="center_vertical"

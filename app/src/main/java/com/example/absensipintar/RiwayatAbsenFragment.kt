@@ -16,12 +16,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.absensipintar.HomeFragment.AbsenAdapter
 import com.example.absensipintar.databinding.FragmentRiwayatAbsenBinding
+import com.example.absensipintar.databinding.ItemhomeBinding
 import com.example.absensipintar.model.AbsenModel
+import com.example.absensipintar.utils.collapseView
+import com.example.absensipintar.utils.expandView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
+import kotlin.math.abs
 
 
 class RiwayatAbsenFragment : Fragment() {
@@ -123,11 +127,12 @@ class RiwayatAbsenFragment : Fragment() {
             .get()
             .addOnSuccessListener { documents ->
                 absenList.clear()
+                val tempAbsenList = mutableListOf<AbsenModel>()
                 for (document in documents) {
                     val absen = document.toObject(AbsenModel::class.java)
                     absenList.add(absen)
                 }
-
+                absenList.addAll(tempAbsenList.sortedByDescending { it.tanggal })
                 if (absenList.isEmpty()) {
                     b.ryc.visibility = View.GONE
                     b.riwayat.visibility = View.VISIBLE
@@ -140,16 +145,15 @@ class RiwayatAbsenFragment : Fragment() {
             }
 
     }
-    class AbsenAdapter(private val absenList: List<AbsenModel>) : RecyclerView.Adapter<AbsenAdapter.AbsenViewHolder>() {
+    class AbsenAdapter(private val absenList: List<AbsenModel> ) : RecyclerView.Adapter<AbsenAdapter.AbsenViewHolder>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbsenViewHolder {
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.itemhomeadmin, parent, false)
+            val view = ItemhomeBinding.inflate(LayoutInflater.from(parent.context),parent,false)
             return AbsenViewHolder(view)
         }
 
         override fun onBindViewHolder(holder: AbsenViewHolder, position: Int) {
             val absen = absenList[position]
-
 
             val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
             val parsedDate = dateFormat.parse(absen.tanggal)
@@ -157,43 +161,96 @@ class RiwayatAbsenFragment : Fragment() {
             val hariFormat = SimpleDateFormat("EEEE", Locale("id", "ID"))
             val tanggalFormat = SimpleDateFormat("dd", Locale.getDefault())
 
-
-
             holder.bulan.text = bulanFormat.format(parsedDate!!)
             holder.tanggal.text = tanggalFormat.format(parsedDate)
             holder.hari.text = hariFormat.format(parsedDate)
-            holder.waktuTiba.text = "Waktu tiba : ${absen.waktuMasuk}"
+            holder.b.fulldate.text =
+                "${hariFormat.format(parsedDate)}, ${tanggalFormat.format(parsedDate)} ${
+                    bulanFormat.format(parsedDate)
+                } ${Calendar.getInstance().get(Calendar.YEAR)}"
+
             val batasWaktu = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).parse("08:00:00")
-            val waktuMasukDate = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).parse(absen.waktuMasuk ?: "")
-            if (absen.alasan != null){
-                holder.terlambatAtauTidak.text = "Izin Terlambat"
-                holder.terlambatAtauTidak.setTextColor(0xFF676767.toInt())
-                holder.status.setBackgroundColor(android.graphics.Color.parseColor("#676767"))
-            }else {
-            if (waktuMasukDate.after(batasWaktu)) {
-                holder.terlambatAtauTidak.text = "Terlambat"
-                holder.terlambatAtauTidak.setTextColor(0xFF960000.toInt())
-                holder.status.setBackgroundColor(android.graphics.Color.parseColor("#B80003"))
+
+            val waktuMasuk = absen.waktuMasuk?.takeIf { it.isNotEmpty() }
+            val waktuKeluar = absen.waktuKeluar?.takeIf { it.isNotEmpty() }
+
+            if (absen.waktuKeluar.isNullOrEmpty()) {
+                holder.b.absenKeluar.text = "Belum Absen Keluar"
             } else {
-                holder.terlambatAtauTidak.text = "Tepat Waktu"
-                holder.terlambatAtauTidak.setTextColor(0xFF049F09.toInt())
-                holder.status.setBackgroundColor(android.graphics.Color.parseColor("#1DD600"))
+                holder.b.absenKeluar.text = absen.waktuKeluar
             }
+
+
+
+            if (waktuMasuk == null) {
+                holder.terlambatAtauTidak.text = "Tidak Hadir"
+                holder.terlambatAtauTidak.setTextColor(0xFFFF0000.toInt())
+                holder.status.setBackgroundColor(android.graphics.Color.parseColor("#FF0000"))
+                holder.waktuTiba.text = "Tidak Hadir"
+                holder.b.formterlambat.visibility = View.GONE
+            } else {
+                holder.waktuTiba.text = "Waktu tiba : $waktuMasuk"
+
+                val waktuMasukDate = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).parse(waktuMasuk)
+
+                if (absen.alasan != null) {
+                    if (absen.alasan == "Macet" || absen.alasan == "Hujan" || absen.alasan == "Ban Bocor" || absen.alasan == "Lainnya"){
+
+                    holder.terlambatAtauTidak.text = "Izin Terlambat"
+                    holder.terlambatAtauTidak.setTextColor(0xFF676767.toInt())
+                    holder.status.setBackgroundColor(android.graphics.Color.parseColor("#676767"))
+                    holder.b.formterlambat.visibility = View.GONE
+                    }else{
+                        holder.terlambatAtauTidak.text = "Izin Acara"
+                        holder.terlambatAtauTidak.setTextColor(0xFF676767.toInt())
+                        holder.status.setBackgroundColor(android.graphics.Color.parseColor("#676767"))
+                        holder.b.formterlambat.visibility = View.GONE
+                        holder.b.formkeluar.visibility = View.GONE
+                    }
+
+                } else {
+                    if (waktuMasukDate.after(batasWaktu)) {
+                        holder.terlambatAtauTidak.text = "Terlambat"
+                        holder.terlambatAtauTidak.setTextColor(0xFF960000.toInt())
+                        holder.status.setBackgroundColor(android.graphics.Color.parseColor("#B80003"))
+
+                        val selisihMillis = waktuMasukDate.time - batasWaktu.time
+                        val jamTerlambat = (selisihMillis / (1000 * 60 * 60)).toInt()
+                        val menitTerlambat = ((selisihMillis / (1000 * 60)) % 60).toInt()
+
+                        holder.b.jumlahjamTerlambat.text = "Telat $jamTerlambat Jam $menitTerlambat Menit"
+                        holder.b.jumlahjamTerlambat.setTextColor(0xFF960000.toInt())
+                    } else {
+                        holder.terlambatAtauTidak.text = "Tepat Waktu"
+                        holder.terlambatAtauTidak.setTextColor(0xFF049F09.toInt())
+                        holder.status.setBackgroundColor(android.graphics.Color.parseColor("#1DD600"))
+                        holder.b.formterlambat.visibility = View.GONE
+                    }
+                }
+            }
+
+            holder.b.klick.setOnClickListener {
+                if (holder.b.detailLayout.visibility == View.GONE) {
+                    holder.b.detailLayout.expandView()
+                } else {
+                    holder.b.detailLayout.collapseView()
+                }
             }
         }
+
 
         override fun getItemCount(): Int {
             return absenList.size
         }
 
-        class AbsenViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-            val bulan: TextView = itemView.findViewById(R.id.bulan)
-            val tanggal: TextView = itemView.findViewById(R.id.tanggal)
-            val hari: TextView = itemView.findViewById(R.id.hari)
-            val waktuTiba: TextView = itemView.findViewById(R.id.waktuTiba)
-            val terlambatAtauTidak : TextView = itemView.findViewById(R.id.tepatWaktuAtauTidak)
-            val status : LinearLayout = itemView.findViewById(R.id.status)
-        }
+        class AbsenViewHolder(val b: ItemhomeBinding) : RecyclerView.ViewHolder(b.root) {
+            val bulan: TextView = b.bulan
+            val tanggal: TextView = b.tanggal
+            val hari: TextView = b.hari
+            val waktuTiba: TextView = b.waktuTiba
+            val terlambatAtauTidak : TextView = b.tepatWaktuAtauTidak
+            val status : LinearLayout = b.status
+         }
     }
 
 

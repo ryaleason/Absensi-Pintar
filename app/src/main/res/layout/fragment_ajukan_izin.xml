@@ -11,18 +11,30 @@
 
 
     <LinearLayout
+        android:layout_centerInParent="true"
         android:layout_marginBottom="10dp"
-        android:layout_above="@+id/center"
         android:layout_width="match_parent"
         android:layout_marginHorizontal="25dp"
         android:orientation="vertical"
         android:layout_height="wrap_content">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="12dp"
+            android:layout_width="match_parent"
             android:gravity="center_vertical"
             android:layout_height="wrap_content">
 
+
+
+
+
+
+    <LinearLayout
+        android:id="@+id/center"
+        android:layout_centerInParent="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
         <TextView
             android:layout_width="wrap_content"
@@ -33,34 +45,24 @@
             android:textSize="25dp"
             android:layout_height="30dp"/>
 
-            <ImageView
-                android:layout_width="30dp"
-                android:layout_marginLeft="10dp"
-                android:src="@drawable/calendar"
-                android:layout_height="30dp"/>
-
-        </LinearLayout>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:text="Pengajuan Izin"
-            android:fontFamily="@font/popinssemibold"
-            android:textColor="@color/birutua"
-            android:textSize="25dp"
-            android:layout_height="wrap_content"/>
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/licensingtipisbiru"
+            android:layout_height="30dp"/>
 
     </LinearLayout>
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="Pengajuan Izin"
+                android:fontFamily="@font/popinssemibold"
+                android:textColor="@color/birutua"
+                android:textSize="25dp"
+                android:layout_height="wrap_content"/>
 
-
-    <LinearLayout
-        android:id="@+id/center"
-        android:orientation="vertical"
-        android:layout_marginHorizontal="25dp"
-        android:layout_centerInParent="true"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        </LinearLayout>
 
         <LinearLayout
             android:layout_marginBottom="10dp"
@@ -192,6 +194,7 @@
 
 
         <TextView
+            android:id="@+id/riwayatIzin"
             android:textColor="#ABABAB"
             android:layout_width="match_parent"
             android:text="Riwayat Izin"

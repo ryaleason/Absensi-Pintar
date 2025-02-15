@@ -42,7 +42,9 @@
 
             Log.d("USERRID",userId)
 
-
+            b.back.setOnClickListener {
+                finish()
+            }
             absenAdapter = AbsenAdapter(absenList,db)
             Log.d("MODELLIST",absenList.toString())
             b.ryc.layoutManager = LinearLayoutManager(this@AjukanIzinAdmin)

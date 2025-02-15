@@ -10,16 +10,8 @@
     tools:context=".MenuUtama">
 
 
-    <LinearLayout
-        android:id="@+id/statusBar"
-        android:orientation="vertical"
-        android:background="@color/birutua"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"/>
-
-
     <androidx.viewpager2.widget.ViewPager2
-        android:layout_below="@+id/statusBar"
+        android:paddingBottom="55dp"
         android:id="@+id/viewpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
@@ -52,11 +44,13 @@
                 android:layout_height="match_parent">
 
                 <ImageView
-                    android:layout_width="30dp"
-                    android:src="@drawable/home"
+                    android:id="@+id/imghome"
+                    android:layout_width="26dp"
+                    android:src="@drawable/homeabu"
                     android:layout_height="30dp"/>
 
                 <TextView
+                    android:id="@+id/texthome"
                     android:layout_width="wrap_content"
                     android:text="Home"
                     android:textColor="@color/birutua"
@@ -76,11 +70,13 @@
                 android:layout_height="match_parent">
 
                 <ImageView
-                    android:layout_width="30dp"
-                    android:src="@drawable/listview"
+                    android:id="@+id/imglist"
+                    android:layout_width="26dp"
+                    android:src="@drawable/todoabu"
                     android:layout_height="30dp"/>
 
                 <TextView
+                    android:id="@+id/textlist"
                     android:layout_width="wrap_content"
                     android:text="Riwayat Absen"
                     android:textColor="#999999"
@@ -100,13 +96,15 @@
                 android:layout_height="match_parent">
 
                 <ImageView
-                    android:layout_width="30dp"
-                    android:src="@drawable/listview"
+                    android:id="@+id/imgsetting"
+                    android:layout_width="26dp"
+                    android:src="@drawable/licensingabu"
                     android:layout_height="30dp"/>
 
                 <TextView
+                    android:id="@+id/textsetting"
                     android:layout_width="wrap_content"
-                    android:text="Ajukan Acara"
+                    android:text="Pengaturan"
                     android:textColor="#999999"
                     android:textSize="8dp"
                     android:fontFamily="@font/popinssemibold"
@@ -124,11 +122,13 @@
                 android:layout_height="match_parent">
 
                 <ImageView
-                    android:layout_width="30dp"
-                    android:src="@drawable/costumer"
+                    android:id="@+id/imguser"
+                    android:layout_width="26dp"
+                    android:src="@drawable/user"
                     android:layout_height="30dp"/>
 
                 <TextView
+                    android:id="@+id/textuser"
                     android:layout_width="wrap_content"
                     android:text="Profile"
                     android:textColor="#999999"
