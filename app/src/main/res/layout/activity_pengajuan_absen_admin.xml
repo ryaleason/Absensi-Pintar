@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:orientation="vertical"
+    android:background="@drawable/bgizin"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".PengajuanAbsenAdmin">
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:layout_width="match_parent"
+        android:id="@+id/refres"
+        android:layout_height="match_parent">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.core.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+
+                    <LinearLayout
+                        android:id="@+id/back"
+                        android:layout_marginLeft="10dp"
+                        android:layout_width="wrap_content"
+                        android:gravity="center_vertical"
+                        android:layout_marginTop="32dp"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:src="@drawable/leftarow"
+                            android:layout_height="30dp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:text="Kembali"
+                            android:textColor="@color/birutua"
+                            android:layout_marginLeft="12dp"
+                            android:fontFamily="@font/popinssemibold"
+                            android:layout_height="wrap_content"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_marginTop="20dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_above="@+id/center"
+                        android:layout_width="match_parent"
+                        android:layout_marginHorizontal="25dp"
+                        android:orientation="vertical"
+                        android:layout_height="wrap_content">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:gravity="center_vertical"
+                            android:layout_height="wrap_content">
+
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:text="Pemintaan"
+                                android:fontFamily="@font/popinssemibold"
+                                android:textColor="@color/birutua"
+                                android:textSize="25dp"
+                                android:layout_height="30dp"/>
+
+                            <ImageView
+                                android:layout_width="30dp"
+                                android:layout_marginLeft="10dp"
+                                android:src="@drawable/calendar"
+                                android:layout_height="30dp"/>
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:text="Absen Karyawan"
+                            android:fontFamily="@font/popinssemibold"
+                            android:textColor="@color/birutua"
+                            android:textSize="25dp"
+                            android:layout_height="wrap_content"/>
+                    </LinearLayout>
+
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/ryc"
+                        android:layout_marginTop="10dp"
+                        android:layout_width="match_parent"
+                        android:nestedScrollingEnabled="false"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+            </androidx.core.widget.NestedScrollView>
+
+        </LinearLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+</LinearLayout>

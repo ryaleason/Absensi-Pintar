@@ -147,6 +147,7 @@
             android:layout_height="match_parent">
 
             <EditText
+                android:id="@+id/radius"
                 android:inputType="number"
                 android:maxLength="3"
                 android:textColor="@color/black"

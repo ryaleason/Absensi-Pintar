@@ -1,0 +1,228 @@
+package com.example.absensipintar
+
+import android.graphics.BitmapFactory
+import android.os.Bundle
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.absensipintar.AjukanIzinAdmin.AbsenAdapter
+import com.example.absensipintar.databinding.ActivityAjukanIzinAdminBinding
+import com.example.absensipintar.databinding.ActivityPengajuanAbsenAdminBinding
+import com.example.absensipintar.databinding.ItemajukanabsenBinding
+import com.example.absensipintar.model.PengajuanAbsenModel
+import com.example.absensipintar.utils.collapseView
+import com.example.absensipintar.utils.expandView
+import com.google.firebase.FirebaseApp
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
+import kotlin.math.abs
+
+class PengajuanAbsenAdmin : AppCompatActivity() {
+
+    private val db = FirebaseFirestore.getInstance()
+    private lateinit var absenAdapter: AbsenAdapter
+    private val absenList = mutableListOf<PengajuanAbsenModel>()
+    private lateinit var b: ActivityPengajuanAbsenAdminBinding
+    override fun onCreate(savedInstanceState: Bundle?) {
+        FirebaseApp.initializeApp(this)
+        super.onCreate(savedInstanceState)
+        b = ActivityPengajuanAbsenAdminBinding.inflate(layoutInflater)
+        setContentView(b.root)
+
+        val user = FirebaseAuth.getInstance().currentUser
+        val userId = user?.uid ?: ""
+
+        Log.d("USERRID",userId)
+        loadAbsenData()
+
+        absenAdapter = AbsenAdapter(absenList,db)
+        Log.d("MODELLIST",absenList.toString())
+        b.ryc.layoutManager = LinearLayoutManager(this)
+        b.ryc.adapter = absenAdapter
+
+    }
+
+    private fun loadAbsenData() {
+        db.collectionGroup("pengajuanAbsen")
+            .get()
+            .addOnSuccessListener { documents ->
+                absenList.clear()
+                if (documents.isEmpty) {
+
+                    b.ryc.visibility = View.GONE
+                    return@addOnSuccessListener
+                }
+
+                for (document in documents) {
+                    val absen = document.toObject(PengajuanAbsenModel::class.java)
+                    absen.pengajuanAbsenId = document.id
+
+                    val pathSegments = document.reference.path.split("/")
+                    if (pathSegments.size >= 3) {
+                        absen.userId = pathSegments[pathSegments.size - 3]
+                    } else {
+                        absen.userId = ""
+                    }
+
+
+
+                    absenList.add(absen)
+                }
+
+                b.ryc.visibility = View.VISIBLE
+                absenAdapter.notifyDataSetChanged()
+            }
+
+    }
+
+    class AbsenAdapter(private val absenList: List<PengajuanAbsenModel>, private val db: FirebaseFirestore) :
+        RecyclerView.Adapter<AbsenAdapter.AbsenViewHolder>() {
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbsenViewHolder {
+            val binding = ItemajukanabsenBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            return AbsenViewHolder(binding, db)
+        }
+
+        override fun onBindViewHolder(holder: AbsenViewHolder, position: Int) {
+            holder.bind(absenList[position])
+        }
+
+        override fun getItemCount(): Int = absenList.size
+
+        class AbsenViewHolder(private val b: ItemajukanabsenBinding, private val db: FirebaseFirestore) :
+            RecyclerView.ViewHolder(b.root) {
+
+            fun bind(absen: PengajuanAbsenModel) {
+                val dateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+                val parsedDate = absen.tanggal_pengajuan?.let { dateFormat.parse(it) }
+
+                Log.d("tanggalPengajuan", absen.tanggal_pengajuan.toString())
+
+                parsedDate?.let {
+                    val bulanFormat = SimpleDateFormat("MMM", Locale.getDefault())
+                    val tanggalFormat = SimpleDateFormat("dd", Locale.getDefault())
+                    val hariFormat = SimpleDateFormat("EEEE", Locale("id", "ID"))
+
+                    b.bulan.text = bulanFormat.format(it)
+                    b.tanggal.text = tanggalFormat.format(it)
+                }
+                b.namapendek.text = absen.nama
+                b.nama.text = absen.nama
+                b.izinWaktu.text = "Jam : ${absen.jam}"
+                b.tanggalPengajuan.text = "Pengajuan: ${absen.tanggal_pengajuan}"
+                b.alasan.text = "Alasan: ${absen.alasan}"
+
+
+                val filePath = absen.foto_path
+                val bitmap = BitmapFactory.decodeFile(filePath)
+                b.imageView.setImageBitmap(null)
+                b.imageView.setImageBitmap(bitmap)
+
+                b.detailLayout.visibility = View.GONE
+                b.klick.setOnClickListener {
+                    if (b.detailLayout.visibility == View.GONE) {
+                        b.detailLayout.expandView()
+                    } else {
+                        b.detailLayout.collapseView()
+                    }
+                }
+
+                cekStatus(absen)
+
+
+                b.setuju.setOnClickListener {
+                    updateIzin(absen, "Disetujui")
+                }
+
+
+                b.tidakSetuju.setOnClickListener {
+                    updateIzin(absen, "Ditolak")
+                }
+            }
+
+            private fun cekStatus(absen: PengajuanAbsenModel) {
+                val izinRef = db.collection("users")
+                    .document(absen.userId)
+                    .collection("Izin")
+                    .document(absen.pengajuanAbsenId)
+
+                izinRef.get().addOnSuccessListener { document ->
+                    if (document.exists()) {
+                        val status = document.getString("izinAdmin") ?: "Pending"
+
+                        b.status.text = "Status: $status"
+
+                        if (status == "Disetujui" || status == "Ditolak") {
+                            b.setuju.isEnabled = false
+                            b.tidakSetuju.isEnabled = false
+                            b.setuju.alpha = 0.5f
+                            b.tidakSetuju.alpha = 0.5f
+                        } else {
+                            b.setuju.isEnabled = true
+                            b.tidakSetuju.isEnabled = true
+                            b.setuju.alpha = 1.0f
+                            b.tidakSetuju.alpha = 1.0f
+                        }
+                    }
+                }
+            }
+
+            private fun updateIzin(absen: PengajuanAbsenModel, status: String) {
+                if (absen.userId.isEmpty() || absen.pengajuanAbsenId.isEmpty()) {
+                    Log.e("FIREBASE_UPDATE", "User ID atau Izin ID kosong!")
+                    return
+                }
+
+                val izinRef = db.collection("users")
+                    .document(absen.userId)
+                    .collection("pengajuanAbsen")
+                    .document(absen.pengajuanAbsenId)
+
+                izinRef.update("izinAdmin", status)
+                    .addOnSuccessListener {
+                        Log.d("FIREBASE_UPDATE", "Izin berhasil diperbarui ke $status")
+                        b.status.text = "Status: $status"
+
+                        b.setuju.isEnabled = false
+                        b.tidakSetuju.isEnabled = false
+                        b.setuju.alpha = 0.5f
+                        b.tidakSetuju.alpha = 0.5f
+
+                        if (status == "Disetujui") {
+                            addIzin(absen)
+                        }
+                    }
+
+            }
+
+            private fun addIzin(absen: PengajuanAbsenModel) {
+
+                val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Calendar.getInstance().time)
+                val userAbsenRef = db.collection("users")
+                    .document(absen.userId)
+                    .collection("absen")
+                    .document(today)
+
+                val izinData = hashMapOf(
+                    "status" to "Izin",
+                    "waktuMasuk" to absen.jam,
+                    "tanggal_pengajuan" to absen.tanggal_pengajuan,
+                    "alasan" to absen.alasan,
+                    "tanggal" to today
+                )
+
+                userAbsenRef.set(izinData)
+            }
+        }
+    }
+}

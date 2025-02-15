@@ -56,7 +56,6 @@
         private fun setupSwipeToRefresh(b : ActivityAjukanIzinAdminBinding) {
             b.refres.setOnRefreshListener {
                 loadAbsenData()
-                absenList
             }
         }
 
@@ -117,6 +116,20 @@
                 RecyclerView.ViewHolder(b.root) {
 
                 fun bind(absen: PengajuanIzinModel) {
+
+                    val dateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+                    val parsedDate = absen.tanggal_pengajuan?.let { dateFormat.parse(it) }
+
+                    Log.d("tanggalPengajuan", absen.tanggal_pengajuan.toString())
+
+                    parsedDate?.let {
+                        val bulanFormat = SimpleDateFormat("MMM", Locale.getDefault())
+                        val tanggalFormat = SimpleDateFormat("dd", Locale.getDefault())
+                        val hariFormat = SimpleDateFormat("EEEE", Locale("id", "ID"))
+
+                        b.bulan.text = bulanFormat.format(it)
+                        b.tanggal.text = tanggalFormat.format(it)
+                    }
                     b.namapendek.text = absen.nama
                     b.nama.text = absen.nama
                     b.izinWaktu.text = "${absen.tanggal_awal} sd ${absen.tanggal_akhir}"

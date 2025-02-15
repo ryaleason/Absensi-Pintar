@@ -165,6 +165,11 @@ class RiwayatAbsenFragment : Fragment() {
             holder.waktuTiba.text = "Waktu tiba : ${absen.waktuMasuk}"
             val batasWaktu = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).parse("08:00:00")
             val waktuMasukDate = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).parse(absen.waktuMasuk ?: "")
+            if (absen.alasan != null){
+                holder.terlambatAtauTidak.text = "Izin Terlambat"
+                holder.terlambatAtauTidak.setTextColor(0xFF676767.toInt())
+                holder.status.setBackgroundColor(android.graphics.Color.parseColor("#676767"))
+            }else {
             if (waktuMasukDate.after(batasWaktu)) {
                 holder.terlambatAtauTidak.text = "Terlambat"
                 holder.terlambatAtauTidak.setTextColor(0xFF960000.toInt())
@@ -173,6 +178,7 @@ class RiwayatAbsenFragment : Fragment() {
                 holder.terlambatAtauTidak.text = "Tepat Waktu"
                 holder.terlambatAtauTidak.setTextColor(0xFF049F09.toInt())
                 holder.status.setBackgroundColor(android.graphics.Color.parseColor("#1DD600"))
+            }
             }
         }
 

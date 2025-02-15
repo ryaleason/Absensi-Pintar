@@ -102,7 +102,7 @@ class pengajuanAbsen : AppCompatActivity() {
         val alasan = b.spinnerAlasan.selectedItem.toString().trim()
 
 
-        val tanggal = SimpleDateFormat("dd-MM-yyyy-", Locale.getDefault()).format(Date())
+        val tanggal = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(Date())
         val jam = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())
 
         val izinData = hashMapOf(

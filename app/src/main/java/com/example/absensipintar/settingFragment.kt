@@ -1,52 +1,59 @@
 package com.example.absensipintar
 
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import com.example.absensipintar.databinding.FragmentSettingBinding
 import com.google.firebase.firestore.FirebaseFirestore
 
 class settingFragment : Fragment() {
-    private lateinit var b : FragmentSettingBinding
+    private lateinit var b: FragmentSettingBinding
+
+    private val lokasiMap = mapOf(
+        "SMK Negeri 6 Jember" to Pair(-8.155307, 113.435150),
+        "Rumah" to Pair(-8.217972, 113.379163),
+        "SMK Negeri 8 Jember" to Pair(-8.212767, 113.459315),
+    )
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         b = FragmentSettingBinding.inflate(layoutInflater)
 
-        val alasanArray = resources.getStringArray(R.array.lokasi_absen)
-
+        val alasanArray = lokasiMap.keys.toTypedArray()
         val adapter = ArrayAdapter(requireContext(), R.layout.spiner_item, alasanArray)
         adapter.setDropDownViewResource(R.layout.spiner_dropdown)
-
-        val alasan = b.spinnerAlasan.selectedItem.toString().trim()
+        b.spinnerAlasan.adapter = adapter
 
         b.submit.setOnClickListener {
             val selectedItem = b.spinnerAlasan.selectedItem.toString().trim()
 
-            val lokasiRef = FirebaseFirestore.getInstance().collection("lokasi_absen").document("lokasi_terpilih")
-            val lokasiData = hashMapOf(
-                "nama" to selectedItem,
+            if (lokasiMap.containsKey(selectedItem)) {
+                val (latitude, longitude) = lokasiMap[selectedItem]!!
 
-            )
+                val lokasiRef = FirebaseFirestore.getInstance().collection("users")
+                    .document("U3KAdLt2qOY9k948AOaqFAZGvvf1").collection("lokasi")
+                    .document("6fOQUBZPrU31eRR5uSKS")
 
-            lokasiRef.set(lokasiData)
-                .addOnSuccessListener {
-                    Toast.makeText(requireContext(), "Lokasi absen berhasil diubah!", Toast.LENGTH_SHORT).show()
+                lokasiRef.update(
+                    mapOf(
+                        "latitude" to latitude.toString(),
+                        "longitude" to longitude.toString(),
+                        "radius" to b.radius.text.toString()
+                    )
+                ).addOnSuccessListener {
+                    Toast.makeText(requireContext(), "Lokasi berhasil diupdate: $selectedItem", Toast.LENGTH_SHORT).show()
                 }
-                .addOnFailureListener {
-                    Toast.makeText(requireContext(), "Gagal menyimpan lokasi ke Firebase!", Toast.LENGTH_SHORT).show()
-                }
+            } else {
+                Toast.makeText(requireContext(), "Lokasi tidak ditemukan!", Toast.LENGTH_SHORT).show()
+            }
         }
-        b.spinnerAlasan.adapter = adapter
+
         return b.root
     }
-
-
 }

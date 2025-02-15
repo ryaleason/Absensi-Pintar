@@ -62,7 +62,7 @@
             setupSwipeToRefresh(b)
 
             b.btnIzinAbsen.setOnClickListener {
-
+                startActivity(Intent(requireContext(),PengajuanAbsenAdmin::class.java))
             }
             b.btnIzinAcara.setOnClickListener {
                 startActivity(Intent(requireContext(),AjukanIzinAdmin::class.java))
@@ -199,16 +199,23 @@
 
                     b.waktuTiba.text = "Waktu tiba: ${absen.waktuMasuk ?: "Tidak tersedia"}"
 
-                    val batasWaktu = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).parse("08:00:00")
+
                     val waktuMasukDate: Date? = if (!absen.waktuMasuk.isNullOrEmpty()) {
                         SimpleDateFormat("HH:mm:ss", Locale.getDefault()).parse(absen.waktuMasuk)
                     } else {
                         null
                     }
 
+                    val batasIzin = SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault()).parse("01:10:05.000")
+                    val batasIzinakhir = SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault()).parse("01:10:11.000")
+                    val batasWaktu = SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault()).parse("08:00:00.000")
 
                     if (waktuMasukDate != null && batasWaktu != null) {
-                        if (waktuMasukDate.after(batasWaktu)) {
+                        if (waktuMasukDate.after(batasIzin) && waktuMasukDate.before(batasIzinakhir)) {
+                            b.tepatWaktuAtauTidak.text = "Izin"
+                            b.tepatWaktuAtauTidak.setTextColor(0xFF960000.toInt())
+                            b.status.setBackgroundColor(android.graphics.Color.parseColor("#B80003"))
+                        }else if (waktuMasukDate.after(batasWaktu)){
                             b.tepatWaktuAtauTidak.text = "Terlambat"
                             b.tepatWaktuAtauTidak.setTextColor(0xFF960000.toInt())
                             b.status.setBackgroundColor(android.graphics.Color.parseColor("#B80003"))
