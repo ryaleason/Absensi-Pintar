@@ -107,7 +107,7 @@
                 val calendar = Calendar.getInstance()
                 val jamSekarang = calendar.get(Calendar.HOUR_OF_DAY)
 
-                if (jamSekarang >= 14) {
+                if (jamSekarang >= 9) {
                     checkLokasi(nama.toString(), userId, today, ::checkFingerPrintKeluar)
                 } else {
                     Toast.makeText(context, "Absen keluar hanya bisa dilakukan mulai jam 14:00", Toast.LENGTH_SHORT).show()
@@ -271,11 +271,12 @@
             b.refres.setOnRefreshListener {
                 checkExistingAbsen(userId, today)
                 izinLokasi()
-                b.refres.isRefreshing = false
                 checkExistingAbsen(userId,today)
                 loadAbsenData()
                 cek()
                 initMap()
+                b.refres.isRefreshing = false
+
             }
         }
 
@@ -431,7 +432,7 @@
 
                     gagalFinger++
 
-                    if (gagalFinger >= 3) {
+                    if (gagalFinger > 3) {
                         Toast.makeText(requireContext(), "Matikan HP Anda lalu absen kembali", Toast.LENGTH_LONG).show()
                         gagalFinger = 0
                     }

@@ -152,7 +152,6 @@ class pengajuanAbsen : AppCompatActivity() {
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
                 outputStream.flush()
             }
-            Log.d("FILE", "Gambar disimpan di: ${file.absolutePath}")
             imagePath = file.absolutePath
             file.absolutePath
         } catch (e: IOException) {
