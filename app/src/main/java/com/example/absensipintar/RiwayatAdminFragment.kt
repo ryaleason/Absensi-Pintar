@@ -217,6 +217,7 @@ class RiwayatAdminFragment : Fragment() {
             if (totalUsers == 0) return@addOnSuccessListener
 
             var processedUsers = 0
+            val tempAbsenList = mutableListOf<AbsenModelAdmin>()
 
             for (user in users) {
                 val userId = user.id
@@ -231,20 +232,54 @@ class RiwayatAdminFragment : Fragment() {
                                 val absen = doc.toObject(AbsenModelAdmin::class.java)
                                 absen.nama = nama
                                 absen.email = email
-                                absenList.add(absen)
+                                tempAbsenList.add(absen)
                             }
 
-                            if (absenList.isEmpty()) {
-                                b.ryc.visibility = View.GONE
-                                b.riwayat.visibility = View.VISIBLE
-                            } else {
-                                b.ryc.visibility = View.VISIBLE
-                                b.riwayat.visibility = View.GONE
+                            processedUsers++
+
+                            // Ketika semua user telah diproses, urutkan dan tampilkan data
+                            if (processedUsers == totalUsers) {
+                                // Urutkan berdasarkan tanggal terbaru
+                                val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                                val timeFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
+
+                                tempAbsenList.sortWith(compareByDescending<AbsenModelAdmin> { absen ->
+                                    try {
+                                        if (!absen.tanggal.isNullOrEmpty()) {
+                                            dateFormat.parse(absen.tanggal)
+                                        } else {
+                                            Date(0)
+                                        }
+                                    } catch (e: Exception) {
+                                        Date(0)
+                                    }
+                                }.thenByDescending { absen ->
+                                    try {
+                                        if (!absen.waktuMasuk.isNullOrEmpty()) {
+                                            timeFormat.parse(absen.waktuMasuk)
+                                        } else {
+                                            Date(0)
+                                        }
+                                    } catch (e: Exception) {
+                                        Date(0)
+                                    }
+                                })
+
+                                // Pindahkan data yang sudah diurutkan ke absenList
+                                absenList.addAll(tempAbsenList)
+
+                                // Update tampilan
+                                if (absenList.isEmpty()) {
+                                    b.ryc.visibility = View.GONE
+                                    b.riwayat.visibility = View.VISIBLE
+                                } else {
+                                    b.ryc.visibility = View.VISIBLE
+                                    b.riwayat.visibility = View.GONE
+                                }
+                                absenAdapter.notifyDataSetChanged()
                             }
-                            absenAdapter.notifyDataSetChanged()
                         }
                 }
-
             }
         }
     }
@@ -275,7 +310,15 @@ class RiwayatAdminFragment : Fragment() {
                     b.fulldate.text = "Tanggal tidak tersedia"
                 } else {
                     val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-                    val parsedDate = absen.tanggal?.let { dateFormat.parse(it) }
+                    val parsedDate = try {
+                        if (!absen.tanggal.isNullOrEmpty()) {
+                            dateFormat.parse(absen.tanggal)
+                        } else {
+                            null
+                        }
+                    } catch (e: Exception) {
+                        null
+                    }
 
                     parsedDate?.let {
                         val bulanFormat = SimpleDateFormat("MMM", Locale.getDefault())
@@ -296,9 +339,13 @@ class RiwayatAdminFragment : Fragment() {
 
                     val batasWaktu =
                         SimpleDateFormat("HH:mm:ss", Locale.getDefault()).parse("08:00:00")
-                    val waktuMasukDate: Date? = if (!absen.waktuMasuk.isNullOrEmpty()) {
-                        SimpleDateFormat("HH:mm:ss", Locale.getDefault()).parse(absen.waktuMasuk)
-                    } else {
+                    val waktuMasukDate: Date? = try {
+                        if (!absen.waktuMasuk.isNullOrEmpty()) {
+                            SimpleDateFormat("HH:mm:ss", Locale.getDefault()).parse(absen.waktuMasuk)
+                        } else {
+                            null
+                        }
+                    } catch (e: Exception) {
                         null
                     }
 

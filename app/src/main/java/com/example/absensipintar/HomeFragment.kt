@@ -4,8 +4,6 @@
     import android.app.AlertDialog
     import android.content.Context
     import android.content.Intent
-    import android.content.pm.PackageManager
-    import android.graphics.Color
     import android.location.Location
     import android.os.Bundle
     import android.os.Handler
@@ -20,15 +18,12 @@
     import android.widget.Toast
     import androidx.biometric.BiometricManager
     import androidx.biometric.BiometricPrompt
-    import androidx.core.app.ActivityCompat
     import androidx.core.content.ContextCompat
     import androidx.fragment.app.Fragment
     import androidx.recyclerview.widget.LinearLayoutManager
     import androidx.recyclerview.widget.RecyclerView
     import com.example.absensipintar.databinding.FragmentHomeBinding
     import com.google.android.gms.location.FusedLocationProviderClient
-    import com.google.android.gms.location.LocationServices
-    import com.google.android.gms.maps.CameraUpdateFactory
     import com.google.android.gms.maps.GoogleMap
     import com.google.android.gms.maps.SupportMapFragment
     import com.google.android.gms.maps.model.LatLng
@@ -46,11 +41,19 @@
     import com.example.absensipintar.model.AbsenModel
     import com.google.android.gms.maps.model.Circle
     import com.google.android.gms.maps.model.CircleOptions
+    import com.google.android.gms.maps.model.LatLngBounds
     import com.google.android.gms.maps.model.Marker
     import com.google.firebase.auth.FirebaseAuth
     import com.google.firebase.firestore.FirebaseFirestore
     import java.util.Date
     import kotlin.math.abs
+    import android.Manifest
+    import android.content.pm.PackageManager
+    import android.graphics.Color
+    import androidx.core.app.ActivityCompat
+    import com.google.android.gms.location.LocationServices
+    import com.google.android.gms.maps.CameraUpdateFactory
+    import com.google.android.gms.maps.model.*
 
 
     class HomeFragment : Fragment() {
@@ -128,7 +131,7 @@
             initMap()
             setupSwipeToRefresh(userId, today)
             loadAbsenData()
-//            ambilLokasiDariFirebase()
+           hitungjarak()
             return b.root
         }
 
@@ -274,6 +277,7 @@
                 checkExistingAbsen(userId,today)
                 loadAbsenData()
                 cek()
+                hitungjarak()
                 initMap()
                 b.refres.isRefreshing = false
 
@@ -590,13 +594,19 @@
             mapFragment?.getMapAsync { googleMap ->
                 mMap = googleMap
 
+                // Aktifkan lokasi pengguna terlebih dahulu
+                enableMyLocation()
+
+                // Mendapatkan lokasi absen
                 LokasiAbsen { lokasiAbsen, radiusAbsen ->
                     if (lokasiAbsen != null && radiusAbsen != null) {
                         circle?.remove()
                         marker?.remove()
 
                         marker = mMap.addMarker(
-                            MarkerOptions().position(lokasiAbsen).title("Lokasi Absen")
+                            MarkerOptions()
+                                .position(lokasiAbsen)
+                                .title("Lokasi Absen")
                         )
 
                         circle = mMap.addCircle(
@@ -608,15 +618,92 @@
                                 .strokeWidth(3f)
                         )
 
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lokasiAbsen, 15f))
+                        // Mendapatkan lokasi pengguna saat ini
+                        getCurrentLocation { userLocation ->
+                            if (userLocation != null) {
+                                // Tambahkan marker untuk lokasi pengguna
+                                mMap.addMarker(
+                                    MarkerOptions()
+                                        .position(userLocation)
+                                        .title("Lokasi Saya")
+                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+                                )
+
+                                // Buat bounds yang mencakup kedua lokasi
+                                val boundsBuilder = LatLngBounds.Builder()
+                                boundsBuilder.include(lokasiAbsen)
+                                boundsBuilder.include(userLocation)
+
+                                // Tambahkan area radius ke dalam bounds
+                                val radiusInDegrees = radiusAbsen / 111000f
+                                boundsBuilder.include(
+                                    LatLng(
+                                        lokasiAbsen.latitude - radiusInDegrees,
+                                        lokasiAbsen.longitude - radiusInDegrees
+                                    )
+                                )
+                                boundsBuilder.include(
+                                    LatLng(
+                                        lokasiAbsen.latitude + radiusInDegrees,
+                                        lokasiAbsen.longitude + radiusInDegrees
+                                    )
+                                )
+
+                                // Animasi kamera untuk menampilkan kedua lokasi dengan padding
+                                val bounds = boundsBuilder.build()
+                                val padding = 150 // padding dalam pixel
+                                val cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding)
+                                mMap.animateCamera(cameraUpdate)
+                            } else {
+                                // Jika tidak bisa mendapatkan lokasi pengguna, hanya zoom ke lokasi absen
+                                val radiusInDegrees = radiusAbsen / 111000f
+                                val bounds = LatLngBounds(
+                                    LatLng(
+                                        lokasiAbsen.latitude - radiusInDegrees,
+                                        lokasiAbsen.longitude - radiusInDegrees
+                                    ),
+                                    LatLng(
+                                        lokasiAbsen.latitude + radiusInDegrees,
+                                        lokasiAbsen.longitude + radiusInDegrees
+                                    )
+                                )
+                                mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100))
+                            }
+                        }
                     } else {
                         Toast.makeText(requireContext(), "Gagal mendapatkan lokasi absen", Toast.LENGTH_SHORT).show()
                     }
                 }
-
-
-                enableMyLocation()
             }
+        }
+
+
+        private fun getCurrentLocation(callback: (LatLng?) -> Unit) {
+            if (ActivityCompat.checkSelfPermission(
+                    requireContext(),
+                    android.Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                    requireContext(),
+                    android.Manifest.permission.ACCESS_COARSE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                callback(null)
+                return
+            }
+
+            val fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+            fusedLocationClient.lastLocation
+                .addOnSuccessListener { location ->
+                    if (location != null) {
+                        val userLatLng = LatLng(location.latitude, location.longitude)
+                        callback(userLatLng)
+                    } else {
+                        callback(null)
+                    }
+                }
+                .addOnFailureListener {
+                    callback(null)
+                }
         }
 
 

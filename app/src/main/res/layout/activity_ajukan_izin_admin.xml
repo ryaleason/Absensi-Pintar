@@ -87,7 +87,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="Izin Karyawan"
+            android:text="Izin "
             android:fontFamily="@font/popinssemibold"
             android:textColor="@color/birutua"
             android:textSize="25dp"

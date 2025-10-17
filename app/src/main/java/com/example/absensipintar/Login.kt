@@ -134,7 +134,6 @@ class Login : AppCompatActivity() {
                     firebasegoogle(idToken)
                 }
             } catch (e: Exception) {
-                Toast.makeText(this, "Gagal mendapatkan token Google", Toast.LENGTH_SHORT).show()
             }
         }
     }

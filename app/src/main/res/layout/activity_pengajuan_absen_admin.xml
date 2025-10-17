@@ -87,7 +87,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_gravity="center_vertical"
-                            android:text="Absen Karyawan"
+                            android:text="Absen"
                             android:fontFamily="@font/popinssemibold"
                             android:textColor="@color/birutua"
                             android:textSize="25dp"
